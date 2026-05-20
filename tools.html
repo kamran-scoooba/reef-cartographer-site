@@ -214,8 +214,16 @@ input[type=range]::-moz-range-thumb{ width:24px; height:24px; border-radius:50%;
 
 /* footer */
 .sponsor{ margin-top:var(--sp); padding:16px; border-radius:var(--r-md); border:1px dashed var(--line-strong); text-align:center; font-size:.74rem; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; }
-footer.foot{ margin-top:var(--sp); padding-top:18px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:space-between; font-size:.76rem; color:var(--ink-soft); }
-footer.foot b{ font-family:var(--font-display); font-weight:500; color:var(--ink); }
+footer.site{ background:var(--abyss); color:#cfe0e4; padding:clamp(40px,7vw,68px) var(--sp) 32px; }
+footer.site .ft-inner{ width:100%; max-width:1040px; margin:0 auto; display:grid; gap:30px; }
+footer.site .ft-top{ display:flex; justify-content:space-between; gap:30px; flex-wrap:wrap; }
+footer.site .ft-brand{ font-family:var(--font-display); font-weight:500; font-size:1.5rem; color:var(--white); line-height:1.12; }
+footer.site .ft-brand span{ display:block; font-family:var(--font-ui); font-size:.85rem; color:var(--teal-300); font-weight:400; margin-top:4px; }
+footer.site nav{ display:flex; gap:8px 22px; flex-wrap:wrap; }
+footer.site nav a{ color:#cfe0e4; text-decoration:none; font-size:.92rem; font-weight:500; }
+footer.site nav a:hover{ color:var(--white); }
+footer.site .ft-base{ display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:.78rem; color:rgba(207,224,228,.55); border-top:1px solid rgba(207,224,228,.16); padding-top:22px; }
+footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
 
 @media (max-width:380px){ .beamgrid{ grid-template-columns:repeat(2,1fr); } .results{ grid-template-columns:1fr; } }
 </style>
@@ -706,12 +714,25 @@ footer.foot b{ font-family:var(--font-display); font-weight:500; color:var(--ink
     <p class="disclaimer">A good statement names the test, not the hope: it reports the measured checkpoint residual, names the dominant error sources, states what the map is good for, and explicitly disclaims what it is not. A missing or unverified scale reference is a stated limitation — never a silent gap.</p>
   </section>
 
-  <footer class="foot">
-    <span><b>Reef Cartographer</b> — Acoustic &amp; Optical Reef Mapping</span>
-    <span id="foot-tool">Tool 01 of 05</span>
-  </footer>
-
 </div>
+
+<footer class="site">
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div class="ft-brand">Reef Cartographer<span>Acoustic &amp; Optical Reef Mapping</span></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="course.html">The Course</a>
+        <a href="tools.html">Tools</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="ft-base">
+      <span>Recreational &amp; educational mapping — not survey-grade or navigation-grade.</span>
+      <span><b>reefcartographer.com</b></span>
+    </div>
+  </div>
+</footer>
 
 <script>
 "use strict";
@@ -740,7 +761,6 @@ function setTab(name, push){
   if(!TABS.includes(name)) name = "footprint";
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab===name));
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id==="panel-"+name));
-  $("foot-tool").textContent = "Tool "+TABNUM[name]+" of 05";
   Store.set("rc.tab", name);
   if(push && location.hash.slice(1)!==name) history.replaceState(null,"","#"+name);
   if(window.scrollY > 0) window.scrollTo({top:0, behavior:"smooth"});
