@@ -1,0 +1,5 @@
+# reefcartographer.com
+User-agent: *
+Allow: /
+
+Sitemap: https://reefcartographer.com/sitemap.xml

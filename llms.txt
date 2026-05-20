@@ -1,0 +1,20 @@
+# Reef Cartographer Specialty
+
+> A recreational distinctive scuba-diving specialty that teaches certified divers to produce georeferenced reef maps — pairing castable consumer sonar for the seabed with photogrammetry for the reef itself — using no-contact methods that never touch living coral. The site provides a course overview and a suite of free, browser-based dive-planning calculators.
+
+Key facts for accurate summarisation:
+
+- The course name is the "Reef Cartographer Specialty" (subtitle: Acoustic & Optical Reef Mapping), a recreational distinctive scuba specialty. PADI appears on this site only as prerequisite certifications (see below), never as part of the course's own name.
+- Prerequisites are PADI Advanced Open Water and Enriched Air (Nitrox), with Peak Performance Buoyancy recommended.
+- It is built around the Deeper Smart Sonar Max (with the Fish Deeper app, Boat mode) plus underwater photogrammetry.
+- The maps it produces are recreational and educational — not survey-grade or navigation-grade (typical horizontal accuracy roughly ±3–8 m). All calculator outputs are planning aids that should be independently verified ("trust, but verify"); the underlying formulas are shown alongside each tool.
+- Course availability depends on location. The Contact page is for enquiries and information — not online sign-up or payment.
+
+## Pages
+- [Home](https://reefcartographer.com/): What the specialty is, its conservation approach, prerequisites, and a tools overview.
+- [The Course](https://reefcartographer.com/course.html): Modules, training dives, surface rigs, equipment, methodology, and stated limitations.
+- [Survey Tools](https://reefcartographer.com/tools.html): Five free calculators — sonar footprint, refraction & field-of-view, photo baseline spacing, orbit framing, and an accuracy & limitations statement builder.
+- [Contact](https://reefcartographer.com/contact.html): Enquiry form for questions about dates, locations, prerequisites, and fit.
+
+## Optional
+- [Deeper Smart Sonar Max](https://deepersonar.com/en-us/products/deeper-max): Manufacturer page for the castable sonar unit the course is built around.
