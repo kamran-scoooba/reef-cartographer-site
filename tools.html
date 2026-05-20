@@ -55,7 +55,7 @@
   --font-ui:"Archivo",system-ui,-apple-system,sans-serif;
   --font-mono:"Spline Sans Mono",ui-monospace,monospace;
   --r-sm:8px; --r-md:14px; --r-lg:22px;
-  --sp:clamp(16px,4.5vw,26px);
+  --sp:clamp(16px,4.5vw,28px);
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
@@ -68,17 +68,18 @@ body{
 }
 .wrap{ width:100%; max-width:600px; margin:0 auto; padding:0 var(--sp) var(--sp); }
 
-/* site-level nav (static here; the tool tab bar below it is the sticky one) */
+/* site-level nav (static here; the tool tab bar below it is the sticky one) — sized to match the other pages' header exactly */
 .site-nav{ border-bottom:1px solid var(--line); background:var(--paper); }
-.site-nav .nav-inner{ width:100%; max-width:600px; margin:0 auto; padding:0 var(--sp); display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:58px; flex-wrap:wrap; }
-.site-nav .logo{ font-family:var(--font-display); font-weight:600; font-size:1.1rem; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:8px; }
-.site-nav .logo svg{ width:20px; height:20px; }
-.site-nav .links{ display:flex; gap:2px; flex-wrap:wrap; }
-.site-nav .links a{ font-size:.88rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:7px 11px; border-radius:99px; }
+.site-nav .nav-inner{ width:100%; max-width:1040px; margin:0 auto; padding:0 var(--sp); display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:62px; flex-wrap:wrap; }
+.site-nav .logo{ font-family:var(--font-display); font-weight:600; font-size:1.18rem; letter-spacing:-.01em; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:9px; }
+.site-nav .logo svg{ width:22px; height:22px; }
+.site-nav .links{ display:flex; gap:4px; flex-wrap:wrap; }
+.site-nav .links a{ font-size:.92rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:8px 12px; border-radius:99px; }
 .site-nav .links a:hover{ color:var(--ink); background:var(--paper-2); }
 .site-nav .links a.active{ color:var(--ink); }
-.site-nav .links a.active::after{ content:""; display:block; height:3px; margin-top:4px; border-radius:3px; background:var(--coral); }
+.site-nav .links a.active::after{ content:""; display:block; height:3px; margin-top:5px; border-radius:3px; background:var(--coral); }
 .site-nav .links a.cta{ color:var(--white); background:var(--coral); }
+.site-nav .links a.cta:hover{ background:var(--coral-600); }
 
 /* ---- header ---- */
 header{ padding:var(--sp) 0 14px; }
