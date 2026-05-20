@@ -189,6 +189,13 @@ input[type=range]::-moz-range-thumb{ width:24px; height:24px; border-radius:50%;
 .lbl-text{ font-family:var(--font-ui); font-size:10px; }
 
 .disclaimer{ margin-top:var(--sp); font-size:.8rem; color:var(--ink-soft); border-left:2px solid var(--sand-deep); padding-left:14px; line-height:1.5; }
+
+/* trust-but-verify disclaimer at the top of the tools */
+.verify{ margin:16px 0 2px; border:1px solid var(--line); border-left:3px solid var(--coral); border-radius:var(--r-md); background:var(--coral-tint); padding:14px 16px; }
+.verify .vh{ font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--coral-600); margin:0 0 7px; display:flex; align-items:center; gap:8px; }
+.verify .vh svg{ width:15px; height:15px; flex:0 0 auto; }
+.verify p{ font-size:.85rem; color:var(--ink); line-height:1.55; margin:0; }
+.verify p b{ font-weight:600; }
 .disclaimer b{ color:var(--ink); }
 
 /* accuracy statement output */
@@ -237,6 +244,14 @@ footer.foot b{ font-family:var(--font-display); font-weight:500; color:var(--ink
     <div class="brand">Survey <span class="em">Tools</span></div>
     <div class="tagline">Plan every dive before you splash. Acoustic &amp; optical reef mapping.</div>
   </header>
+
+  <div class="verify" role="note">
+    <div class="vh">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Trust, but verify
+    </div>
+    <p>These calculators are planning aids, not authorities. Every result depends on its inputs and assumptions — beam angle, refractive index, swim speed, rounding — and on field conditions that change. <b>Check each figure against your own equipment's specifications and the conditions on the day before you rely on it underwater.</b> The formula is shown beside every tool on purpose: understand the math and verify the result rather than trusting the number blindly. A recreational and educational aid — dive planning and safety remain your responsibility.</p>
+  </div>
 
   <!-- ===================== TAB BAR ===================== -->
   <nav class="tabs" role="tablist" aria-label="Survey tools">
