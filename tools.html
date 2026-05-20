@@ -74,10 +74,10 @@ body{
 .site-nav .logo{ font-family:var(--font-display); font-weight:600; font-size:1.18rem; letter-spacing:-.01em; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:9px; }
 .site-nav .logo svg{ width:22px; height:22px; }
 .site-nav .links{ display:flex; gap:4px; flex-wrap:wrap; }
-.site-nav .links a{ font-size:.92rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:8px 12px; border-radius:99px; }
+.site-nav .links a{ position:relative; font-size:.92rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:8px 12px; border-radius:99px; }
 .site-nav .links a:hover{ color:var(--ink); background:var(--paper-2); }
 .site-nav .links a.active{ color:var(--ink); }
-.site-nav .links a.active::after{ content:""; display:block; height:3px; margin-top:5px; border-radius:3px; background:var(--coral); }
+.site-nav .links a.active::after{ content:""; position:absolute; left:12px; right:12px; bottom:2px; height:3px; border-radius:3px; background:var(--coral); }
 .site-nav .links a.cta{ color:var(--white); background:var(--coral); }
 .site-nav .links a.cta:hover{ background:var(--coral-600); }
 
