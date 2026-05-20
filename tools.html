@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Tools — Reef Cartographer</title>
+<meta name="description" content="Five pre-dive calculators for acoustic and optical reef mapping — footprint, refraction, baseline, orbit, and an accuracy-statement builder.">
+<meta name="theme-color" content="#f3ecdd">
+<link rel="manifest" href="manifest.webmanifest">
+
+<!--
+  ============================================================================
+  REEF CARTOGRAPHER  ·  SURVEY TOOLS  (tabbed app)
+  ----------------------------------------------------------------------------
+  One file, several tools, navigated by the sticky tab bar — nothing stacks
+  down a single endless page. Each tool is its own panel; only the active one
+  is shown. The tab also lives in the URL hash (#refraction) so it is
+  shareable and the browser Back button works.
+
+  Tools in this build:
+    01 Footprint   — done (D = 2 d tan θ/2 ; s = D(1−O))
+    02 Refraction  — done (Snell at a flat port ; frame width for baseline)
+    03 Baseline    — placeholder
+    04 Orbit       — placeholder
+    05 Accuracy    — placeholder
+
+  Pure client-side, no build tools. Drop into GitHub as-is.
+  ============================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================================================
+   DESIGN TOKENS  (site-wide seed — every tool pulls from these)
+   =========================================================================== */
+:root{
+  --paper:#f3ecdd; --paper-2:#ece1cb; --white:#fffdf8;
+  --ink:#0b2730; --ink-soft:#46606a; --ink-faint:#90a2a8;
+  --abyss:#06242e; --teal-900:#08303d; --teal-700:#0e4c5e;
+  --teal-500:#1c8597; --teal-300:#5cb7c3; --teal-100:#c2e6e8;
+  --sand:#e7d8b6; --sand-deep:#d3bd92;
+  --coral:#f0613c; --coral-600:#d94c28; --coral-tint:#fce0d6;
+  --green:#2f9e6f;
+  --line:rgba(11,39,48,.14); --line-strong:rgba(11,39,48,.28);
+  --shadow-sm:0 1px 2px rgba(8,48,61,.08);
+  --shadow-md:0 8px 28px -12px rgba(8,48,61,.35);
+  --font-display:"Fraunces",Georgia,serif;
+  --font-ui:"Archivo",system-ui,-apple-system,sans-serif;
+  --font-mono:"Spline Sans Mono",ui-monospace,monospace;
+  --r-sm:8px; --r-md:14px; --r-lg:22px;
+  --sp:clamp(16px,4.5vw,26px);
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+body{
+  font-family:var(--font-ui); color:var(--ink); background:var(--paper);
+  line-height:1.5; min-height:100dvh;
+  background-image:
+    radial-gradient(120% 90% at 50% -10%, rgba(28,133,151,.10), transparent 60%),
+    repeating-radial-gradient(circle at 18% 8%, transparent 0 26px, rgba(11,39,48,.035) 26px 27px);
+}
+.wrap{ width:100%; max-width:600px; margin:0 auto; padding:0 var(--sp) var(--sp); }
+
+/* site-level nav (static here; the tool tab bar below it is the sticky one) */
+.site-nav{ border-bottom:1px solid var(--line); background:var(--paper); }
+.site-nav .nav-inner{ width:100%; max-width:600px; margin:0 auto; padding:0 var(--sp); display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:58px; flex-wrap:wrap; }
+.site-nav .logo{ font-family:var(--font-display); font-weight:600; font-size:1.1rem; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:8px; }
+.site-nav .logo svg{ width:20px; height:20px; }
+.site-nav .links{ display:flex; gap:2px; flex-wrap:wrap; }
+.site-nav .links a{ font-size:.88rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:7px 11px; border-radius:99px; }
+.site-nav .links a:hover{ color:var(--ink); background:var(--paper-2); }
+.site-nav .links a.active{ color:var(--ink); }
+.site-nav .links a.active::after{ content:""; display:block; height:3px; margin-top:4px; border-radius:3px; background:var(--coral); }
+.site-nav .links a.cta{ color:var(--white); background:var(--coral); }
+
+/* ---- header ---- */
+header{ padding:var(--sp) 0 14px; }
+.kicker{ font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; font-weight:600; color:var(--teal-500); display:flex; align-items:center; gap:.55em; }
+.kicker::before{ content:""; width:26px; height:1px; background:var(--teal-500); opacity:.7; }
+.brand{ font-family:var(--font-display); font-weight:500; font-size:clamp(1.7rem,7vw,2.3rem); line-height:1.05; letter-spacing:-.01em; margin:.3em 0 .15em; }
+.brand .em{ font-style:italic; color:var(--teal-700); }
+.tagline{ color:var(--ink-soft); font-size:.9rem; }
+
+/* ---- sticky tab bar ---- */
+.tabs{
+  position:sticky; top:0; z-index:20; display:flex; gap:0; overflow-x:auto;
+  background:rgba(243,236,221,.94); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line); margin:0 calc(-1*var(--sp));
+  padding:0 var(--sp); scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{ display:none; }
+.tab{
+  flex:0 0 auto; border:none; background:none; cursor:pointer; position:relative;
+  font-family:var(--font-ui); font-size:.9rem; font-weight:600; color:var(--ink-soft);
+  padding:15px 13px 13px; white-space:nowrap; transition:color .15s;
+}
+.tab .tnum{ font-family:var(--font-mono); font-size:.68rem; color:var(--ink-faint); margin-right:6px; }
+.tab:hover:not(.active){ color:var(--teal-700); }
+.tab.active{ color:var(--ink); }
+.tab.active .tnum{ color:var(--coral); }
+.tab.active::after{ content:""; position:absolute; left:13px; right:13px; bottom:-1px; height:3px; background:var(--coral); border-radius:3px 3px 0 0; }
+.tab.soon{ color:var(--ink-faint); }
+
+/* ---- panels ---- */
+.panel{ display:none; padding-top:var(--sp); animation:fade .25s ease; }
+.panel.active{ display:block; }
+@keyframes fade{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:none; } }
+.panel-head{ margin-bottom:18px; }
+.panel-head h2{ font-family:var(--font-display); font-weight:500; font-size:clamp(1.5rem,6.5vw,2rem); line-height:1.05; letter-spacing:-.01em; }
+.panel-head h2 .em{ font-style:italic; color:var(--teal-700); }
+.panel-head p{ color:var(--ink-soft); font-size:.92rem; margin-top:.4em; max-width:48ch; }
+
+/* ===========================================================================
+   SHARED COMPONENTS
+   =========================================================================== */
+.card{ background:var(--white); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-md); padding:clamp(18px,5vw,24px); }
+.field{ margin-bottom:22px; } .field:last-child{ margin-bottom:0; }
+.label{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:9px; }
+.label .name{ font-weight:600; font-size:.95rem; }
+.hint{ color:var(--ink-soft); font-size:.8rem; font-weight:400; text-align:right; }
+
+.in-row{ display:flex; gap:10px; }
+.num{ flex:1 1 auto; min-width:0; font-family:var(--font-mono); font-size:1.3rem; font-weight:500; color:var(--ink); background:var(--paper-2); border:1.5px solid var(--line); border-radius:var(--r-md); padding:12px 14px; transition:border-color .15s,box-shadow .15s; }
+.num:focus{ outline:none; border-color:var(--teal-500); box-shadow:0 0 0 3px rgba(28,133,151,.18); }
+.num.bad{ border-color:var(--coral); box-shadow:0 0 0 3px rgba(240,97,60,.16); }
+
+.seg{ display:flex; background:var(--paper-2); border:1.5px solid var(--line); border-radius:var(--r-md); padding:4px; gap:4px; }
+.seg.tight{ flex:0 0 auto; }
+.seg input{ position:absolute; opacity:0; width:0; height:0; }
+.seg label{ flex:1 1 0; text-align:center; cursor:pointer; user-select:none; font-size:.9rem; font-weight:500; color:var(--ink-soft); padding:9px 12px; border-radius:9px; white-space:nowrap; transition:background .15s,color .15s,box-shadow .15s; }
+.seg label small{ display:block; font-size:.72rem; opacity:.7; font-weight:500; }
+.seg input:checked + label{ background:var(--teal-700); color:var(--white); box-shadow:var(--shadow-sm); }
+.seg input:focus-visible + label{ box-shadow:0 0 0 3px rgba(28,133,151,.4); }
+.beamgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:4px; }
+
+.slider-row{ display:flex; align-items:center; gap:16px; }
+input[type=range]{ -webkit-appearance:none; appearance:none; flex:1; height:6px; border-radius:99px; background:var(--paper-2); border:1px solid var(--line); }
+input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:24px; height:24px; border-radius:50%; background:var(--coral); border:3px solid var(--white); box-shadow:var(--shadow-sm); cursor:pointer; }
+input[type=range]::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:var(--coral); border:3px solid var(--white); box-shadow:var(--shadow-sm); cursor:pointer; }
+.ov-val{ font-family:var(--font-mono); font-weight:600; font-size:1.1rem; min-width:3.4ch; text-align:right; }
+
+.chip{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-ui); font-size:.82rem; font-weight:500; color:var(--teal-700); background:transparent; border:1px dashed var(--line-strong); border-radius:99px; padding:7px 14px; cursor:pointer; margin-top:4px; transition:background .15s,border-color .15s; }
+.chip:hover{ background:var(--paper-2); border-color:var(--teal-500); }
+.chip svg{ width:13px; height:13px; }
+
+.results{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
+.readout{ border-radius:var(--r-md); padding:16px 16px 14px; border:1px solid var(--line); background:var(--paper); }
+.readout.key{ background:var(--ink); border-color:var(--ink); color:var(--white); position:relative; overflow:hidden; }
+.readout.key::after{ content:""; position:absolute; inset:0; background:repeating-radial-gradient(circle at 120% -20%, transparent 0 18px, rgba(92,183,195,.10) 18px 19px); pointer-events:none; }
+.readout .rlabel{ font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); }
+.readout.key .rlabel{ color:var(--teal-300); }
+.readout .rval{ font-family:var(--font-mono); font-weight:600; font-size:1.9rem; line-height:1.05; margin-top:6px; letter-spacing:-.02em; }
+.readout.key .rval{ color:var(--white); }
+.readout.key .rval .accent{ color:var(--coral); }
+.readout .rnote{ font-size:.74rem; color:var(--ink-soft); margin-top:6px; }
+.readout.key .rnote{ color:#cfe6ea; }
+.runit{ font-size:.95rem; font-weight:500; opacity:.75; margin-left:2px; }
+
+.warn{ display:none; margin-top:14px; gap:9px; align-items:flex-start; font-size:.82rem; color:var(--coral-600); background:var(--coral-tint); border:1px solid #f3c3b3; border-radius:var(--r-md); padding:11px 13px; line-height:1.45; }
+.warn.show{ display:flex; }
+.warn svg{ flex:0 0 auto; width:16px; height:16px; margin-top:1px; }
+
+/* offset-line / scale-reference field-prep callout */
+.prep{ margin-top:16px; border:1px solid var(--line); border-left:3px solid var(--teal-500); border-radius:var(--r-md); background:var(--paper-2); padding:14px 16px; }
+.prep .prep-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.prep .prep-kicker{ font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:600; color:var(--teal-700); }
+.prep .prep-cut{ font-family:var(--font-mono); font-weight:600; font-size:1.25rem; color:var(--ink); }
+.prep .prep-cut .runit{ font-size:.85rem; }
+.prep .prep-lead{ font-size:.82rem; color:var(--ink-soft); margin-top:9px; line-height:1.5; }
+.prep .prep-lead b{ color:var(--ink); font-weight:600; }
+.prep ul{ list-style:none; margin:11px 0 0; padding:0; display:grid; gap:7px; }
+.prep li{ position:relative; padding-left:18px; font-size:.8rem; color:var(--ink-soft); line-height:1.45; }
+.prep li::before{ content:""; position:absolute; left:2px; top:7px; width:6px; height:6px; border-radius:50%; background:var(--teal-500); }
+.prep li b{ color:var(--ink); font-weight:600; }
+
+.viz-title{ font-family:var(--font-display); font-size:1.1rem; font-weight:500; margin:var(--sp) 0 12px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.viz-title span{ font-family:var(--font-ui); font-size:.76rem; color:var(--ink-soft); font-weight:400; }
+.viz{ background:var(--white); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); overflow:hidden; }
+.viz svg{ display:block; width:100%; height:auto; }
+.dim-text{ font-family:var(--font-mono); font-size:11px; font-weight:500; }
+.lbl-text{ font-family:var(--font-ui); font-size:10px; }
+
+.disclaimer{ margin-top:var(--sp); font-size:.8rem; color:var(--ink-soft); border-left:2px solid var(--sand-deep); padding-left:14px; line-height:1.5; }
+.disclaimer b{ color:var(--ink); }
+
+/* accuracy statement output */
+.statement{ background:var(--white); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,5vw,24px); font-family:var(--font-display); font-size:1rem; line-height:1.62; color:var(--ink); }
+.statement .miss{ color:var(--coral-600); font-style:italic; }
+.copybtn{ display:inline-flex; align-items:center; gap:8px; margin-top:14px; font-family:var(--font-ui); font-size:.88rem; font-weight:600; color:var(--white); background:var(--teal-700); border:none; border-radius:var(--r-md); padding:11px 18px; cursor:pointer; transition:background .15s; }
+.copybtn:hover{ background:var(--teal-900); }
+.copybtn.done{ background:var(--green); }
+.copybtn svg{ width:15px; height:15px; }
+
+/* placeholder panels */
+.soon-card{ text-align:center; padding:48px 24px; border:1px dashed var(--line-strong); border-radius:var(--r-lg); background:var(--white); }
+.soon-card .formula{ font-family:var(--font-mono); font-size:1.25rem; color:var(--teal-700); margin:12px 0 16px; }
+.soon-card .soon-tag{ display:inline-block; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--coral-600); background:var(--coral-tint); border-radius:99px; padding:5px 12px; font-weight:600; }
+.soon-card p{ color:var(--ink-soft); font-size:.9rem; max-width:40ch; margin:10px auto 0; }
+
+/* footer */
+.sponsor{ margin-top:var(--sp); padding:16px; border-radius:var(--r-md); border:1px dashed var(--line-strong); text-align:center; font-size:.74rem; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; }
+footer.foot{ margin-top:var(--sp); padding-top:18px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:space-between; font-size:.76rem; color:var(--ink-soft); }
+footer.foot b{ font-family:var(--font-display); font-weight:500; color:var(--ink); }
+
+@media (max-width:380px){ .beamgrid{ grid-template-columns:repeat(2,1fr); } .results{ grid-template-columns:1fr; } }
+</style>
+</head>
+
+<body>
+<header class="site-nav">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="var(--coral)" stroke="none"/></svg>
+      Reef Cartographer
+    </a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="course.html">The Course</a>
+      <a href="tools.html" class="active">Tools</a>
+      <a href="enroll.html" class="cta">Enroll</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Reef Cartographer</div>
+    <div class="brand">Survey <span class="em">Tools</span></div>
+    <div class="tagline">Plan every dive before you splash. Acoustic &amp; optical reef mapping.</div>
+  </header>
+
+  <!-- ===================== TAB BAR ===================== -->
+  <nav class="tabs" role="tablist" aria-label="Survey tools">
+    <button class="tab active" data-tab="footprint"  role="tab"><span class="tnum">01</span>Footprint</button>
+    <button class="tab"         data-tab="refraction" role="tab"><span class="tnum">02</span>Refraction</button>
+    <button class="tab"         data-tab="baseline"   role="tab"><span class="tnum">03</span>Baseline</button>
+    <button class="tab"         data-tab="orbit"      role="tab"><span class="tnum">04</span>Orbit</button>
+    <button class="tab"         data-tab="accuracy"   role="tab"><span class="tnum">05</span>Accuracy</button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- PANEL 01 · FOOTPRINT                                          -->
+  <!-- ============================================================ -->
+  <section class="panel active" id="panel-footprint" role="tabpanel">
+    <div class="panel-head">
+      <h2>Footprint &amp; <span class="em">Grid Spacing</span></h2>
+      <p>How wide a circle each sonar ping samples, and how far apart to run your lanes for gap-free coverage.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Water depth</span><span class="hint">surface float → bottom<br>not your diver depth</span></div>
+        <div class="in-row">
+          <input class="num" id="fp-depth" type="number" inputmode="decimal" min="0" step="0.5" value="60" aria-label="Water depth">
+          <div class="seg tight" role="radiogroup" aria-label="Depth units">
+            <input type="radio" name="fpUnit" id="fp-uft" value="ft" checked><label for="fp-uft">ft</label>
+            <input type="radio" name="fpUnit" id="fp-um" value="m"><label for="fp-um">m</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Beam mode</span><span class="hint">Deeper Smart Sonar Max</span></div>
+        <div class="seg beamgrid" role="radiogroup" aria-label="Beam mode">
+          <input type="radio" name="fpBeam" id="fp-bn" value="7" checked><label for="fp-bn">Narrow<small>7°</small></label>
+          <input type="radio" name="fpBeam" id="fp-bm" value="20"><label for="fp-bm">Medium<small>20°</small></label>
+          <input type="radio" name="fpBeam" id="fp-bw" value="47"><label for="fp-bw">Wide<small>47°</small></label>
+          <input type="radio" name="fpBeam" id="fp-bc" value="custom"><label for="fp-bc">Custom<small>θ</small></label>
+        </div>
+        <div id="fp-customWrap" style="margin-top:10px;display:none">
+          <div class="in-row">
+            <input class="num" id="fp-customAngle" type="number" inputmode="decimal" min="1" max="170" step="1" value="12" aria-label="Custom beam angle">
+            <div class="seg tight"><label style="cursor:default;color:var(--ink)">degrees</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Lane overlap</span><span class="hint">30% is the recreational standard</span></div>
+        <div class="slider-row">
+          <input type="range" id="fp-overlap" min="0" max="90" step="5" value="30" aria-label="Lane overlap percent">
+          <span class="ov-val"><span id="fp-ovNum">30</span>%</span>
+        </div>
+      </div>
+
+      <button class="chip" id="fp-example" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Load the Course Guide example
+      </button>
+
+      <div class="results">
+        <div class="readout">
+          <div class="rlabel">Footprint Ø (D)</div>
+          <div class="rval"><span id="fp-outD">—</span><span class="runit" id="fp-unitD">ft</span></div>
+          <div class="rnote">area one ping samples</div>
+        </div>
+        <div class="readout key">
+          <div class="rlabel">Lane spacing (s)</div>
+          <div class="rval"><span class="accent" id="fp-outS">—</span><span class="runit" id="fp-unitS">ft</span></div>
+          <div class="rnote" id="fp-sNote">round DOWN to preserve margin</div>
+        </div>
+      </div>
+
+      <div class="warn" id="fp-warn" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="fp-warnText"></span>
+      </div>
+
+      <div class="prep" aria-label="Suggested reference line">
+        <div class="prep-head">
+          <span class="prep-kicker">Suggested aid · reference line</span>
+          <span class="prep-cut">cut to <span id="fp-cutLen">—</span></span>
+        </div>
+        <p class="prep-lead">Holding a set distance underwater is easier with something physical than by eye. A line — or a marked rigid rod — cut to your lane spacing makes the lateral step-over at each Surveyor's Pivot a measured move, and the same line can sit in frame as a <b>scale reference</b> for the photogrammetry. Optional, cheap, and battery-free — but it puts a line in the water, so weigh the entanglement cost below.</p>
+        <ul>
+          <li><b>Entanglement is the trade-off.</b> Any carried line can snag on structure, your kit, or a buddy. Keep it short and spooled or in hand — never trailing or looped — with a cutter reachable by either hand. A marked <b>rigid rod</b> gives the same reference with no snag risk; prefer it where length allows. If you can't manage the line cleanly, leave it — it's an aid, not a requirement.</li>
+          <li><b>A gauge, not a tether.</b> It sets how far to step over; it never connects the two divers. The single towed float still defines the track.</li>
+          <li><b>Mind stretch.</b> Wet, loaded cord reads long — use low-stretch line (Dyneema) or a marked rigid rod, and note the length you actually measure, not the label. If it doubles as your scale, that measured length is what your model's true size depends on.</li>
+          <li><b>No contact.</b> Water column or open sand only — never living coral. Keep it short and managed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="viz-title">Cross-section <span>the cone projects from the surface float</span></div>
+    <div class="viz">
+      <svg id="fp-side" viewBox="0 0 360 290" role="img" aria-label="Side view of sonar cone">
+        <rect x="0" y="56" width="360" height="52" fill="var(--teal-300)" opacity=".22"/>
+        <rect x="0" y="108" width="360" height="52" fill="var(--teal-500)" opacity=".22"/>
+        <rect x="0" y="160" width="360" height="54" fill="var(--teal-700)" opacity=".22"/>
+        <rect x="0" y="214" width="360" height="76" fill="var(--sand)"/>
+        <path d="M0 214 H360" stroke="var(--sand-deep)" stroke-width="2"/>
+        <path d="M0 56 q 9 -6 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0 t 18 0" fill="none" stroke="var(--teal-500)" stroke-width="2" opacity=".8"/>
+        <line x1="26" y1="56" x2="26" y2="214" stroke="var(--ink)" stroke-width="1" opacity=".5"/>
+        <line x1="22" y1="56" x2="30" y2="56" stroke="var(--ink)" stroke-width="1" opacity=".5"/>
+        <line x1="22" y1="214" x2="30" y2="214" stroke="var(--ink)" stroke-width="1" opacity=".5"/>
+        <text id="fp-depthLbl" class="dim-text" x="34" y="139" fill="var(--ink)">d</text>
+        <polygon id="fp-cone" points="180,60 120,214 240,214" fill="var(--coral)" opacity=".14"/>
+        <line id="fp-coneL" x1="180" y1="60" x2="120" y2="214" stroke="var(--coral-600)" stroke-width="1.6"/>
+        <line id="fp-coneR" x1="180" y1="60" x2="240" y2="214" stroke="var(--coral-600)" stroke-width="1.6"/>
+        <rect x="168" y="46" width="24" height="14" rx="4" fill="var(--ink)"/>
+        <circle cx="180" cy="53" r="2.4" fill="var(--coral)"/>
+        <text id="fp-angleLbl" class="dim-text" x="180" y="80" fill="var(--coral-600)" text-anchor="middle">θ</text>
+        <g>
+          <line id="fp-footLine" x1="120" y1="226" x2="240" y2="226" stroke="var(--ink)" stroke-width="1.4"/>
+          <line id="fp-footTickL" x1="120" y1="221" x2="120" y2="231" stroke="var(--ink)" stroke-width="1.4"/>
+          <line id="fp-footTickR" x1="240" y1="221" x2="240" y2="231" stroke="var(--ink)" stroke-width="1.4"/>
+          <text id="fp-footLbl" class="dim-text" x="180" y="245" fill="var(--ink)" text-anchor="middle">D</text>
+        </g>
+        <circle cx="312" cy="150" r="4" fill="var(--ink)" opacity=".55"/>
+        <text class="lbl-text" x="306" y="170" fill="var(--ink)" opacity=".55" text-anchor="middle">diver depth</text>
+        <text class="lbl-text" x="306" y="182" fill="var(--ink)" opacity=".55" text-anchor="middle">≠ d</text>
+      </svg>
+    </div>
+
+    <div class="viz-title">Lane overlap <span>top-down · spacing s between passes</span></div>
+    <div class="viz">
+      <svg id="fp-top" viewBox="0 0 360 140" role="img" aria-label="Top-down view of overlapping lanes">
+        <rect x="0" y="0" width="360" height="140" fill="var(--teal-700)" opacity=".07"/>
+        <g id="fp-lanes"></g><g id="fp-spaceDim"></g>
+      </svg>
+    </div>
+
+    <p class="disclaimer">A recreational and educational planning aid — <b>not</b> survey-grade. Footprint depends only on water depth and beam angle; your depth as a diver does not change it. Always round spacing <b>down</b> — extra overlap is free insurance; a gap is a hole in your map.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- PANEL 02 · REFRACTION                                         -->
+  <!-- ============================================================ -->
+  <section class="panel" id="panel-refraction" role="tabpanel">
+    <div class="panel-head">
+      <h2>Refraction &amp; <span class="em">Field of View</span></h2>
+      <p>A flat port bends light, so your lens sees a narrower scene underwater than its air spec promises. This gives you the true underwater field of view — and the corrected frame width the Baseline tool needs.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Port type</span><span class="hint">course assumes a flat port</span></div>
+        <div class="seg" role="radiogroup" aria-label="Port type">
+          <input type="radio" name="rfPort" id="rf-flat" value="flat" checked><label for="rf-flat">Flat port</label>
+          <input type="radio" name="rfPort" id="rf-dome" value="dome"><label for="rf-dome">Dome port</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Lens field of view</span><span class="hint">air-rated, from the spec sheet</span></div>
+        <div class="in-row" style="margin-bottom:10px">
+          <input class="num" id="rf-fov" type="number" inputmode="decimal" min="1" max="179" step="1" value="120" aria-label="Field of view in degrees">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">degrees</label></div>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="FOV is full or half angle">
+          <input type="radio" name="rfMode" id="rf-full" value="full" checked><label for="rf-full">Full FOV</label>
+          <input type="radio" name="rfMode" id="rf-half" value="half"><label for="rf-half">Half-FOV (½)</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Subject distance</span><span class="hint">lens → reef · for frame width</span></div>
+        <div class="in-row">
+          <input class="num" id="rf-dist" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Subject distance in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+        </div>
+      </div>
+
+      <button class="chip" id="rf-example" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Load the Course Guide example (45° half-FOV)
+      </button>
+
+      <div class="results">
+        <div class="readout">
+          <div class="rlabel">Underwater FOV</div>
+          <div class="rval"><span id="rf-outFull">—</span><span class="runit">°</span></div>
+          <div class="rnote"><span id="rf-outHalf">—</span>° half · was <span id="rf-airFull">—</span>° in air</div>
+        </div>
+        <div class="readout key">
+          <div class="rlabel">Frame width (W)</div>
+          <div class="rval"><span class="accent" id="rf-outWwater">—</span><span class="runit">m</span></div>
+          <div class="rnote">underwater · feeds Baseline · was <span id="rf-outWair">—</span> m in air</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-soft)">
+        <span>FOV lost: <b style="color:var(--coral-600);font-family:var(--font-mono)" id="rf-outRed">—</b></span>
+        <span>Flat-port ceiling: <b style="font-family:var(--font-mono)" id="rf-ceil">—</b></span>
+      </div>
+
+      <div class="warn" id="rf-warn" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="rf-warnText"></span>
+      </div>
+    </div>
+
+    <div class="viz-title">At the port <span>air-rated cone (dashed) bends to a narrower underwater cone</span></div>
+    <div class="viz">
+      <svg id="rf-viz" viewBox="0 0 360 240" role="img" aria-label="Refraction of the camera field of view at a flat port">
+        <rect x="0" y="0" width="150" height="240" fill="var(--teal-500)" opacity=".14"/>
+        <rect x="150" y="0" width="210" height="240" fill="var(--sand)" opacity=".35"/>
+        <text class="lbl-text" x="14" y="22" fill="var(--teal-700)">WATER</text>
+        <text class="lbl-text" x="300" y="22" fill="var(--sand-deep)" style="fill:#9c8a5e">HOUSING (AIR)</text>
+        <!-- axis -->
+        <line x1="10" y1="120" x2="350" y2="120" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 4" opacity=".4"/>
+        <!-- water cone (filled) -->
+        <polygon id="rf-waterFill" points="150,80 10,100 10,140 150,160" fill="var(--teal-500)" opacity=".16"/>
+        <!-- air cone (filled) -->
+        <polygon id="rf-airFill" points="150,80 270,120 150,160" fill="var(--coral)" opacity=".12"/>
+        <!-- rays -->
+        <line id="rf-airT" x1="270" y1="120" x2="150" y2="80"  stroke="var(--coral-600)" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <line id="rf-airB" x1="270" y1="120" x2="150" y2="160" stroke="var(--coral-600)" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <line id="rf-watT" x1="150" y1="80"  x2="10" y2="100" stroke="var(--teal-700)" stroke-width="1.8"/>
+        <line id="rf-watB" x1="150" y1="160" x2="10" y2="140" stroke="var(--teal-700)" stroke-width="1.8"/>
+        <!-- port -->
+        <line id="rf-port" x1="150" y1="40" x2="150" y2="200" stroke="var(--ink)" stroke-width="3"/>
+        <path id="rf-domeArc" d="" fill="none" stroke="var(--ink)" stroke-width="3" style="display:none"/>
+        <!-- lens -->
+        <circle cx="270" cy="120" r="6" fill="var(--ink)"/>
+        <rect x="276" y="113" width="22" height="14" rx="2" fill="var(--ink)" opacity=".8"/>
+        <text class="lbl-text" x="287" y="146" fill="var(--ink)" text-anchor="middle">lens</text>
+        <!-- angle labels -->
+        <text id="rf-airLbl" class="dim-text" x="214" y="112" fill="var(--coral-600)" text-anchor="middle">θa</text>
+        <text id="rf-watLbl" class="dim-text" x="92" y="112" fill="var(--teal-700)" text-anchor="middle">θw</text>
+      </svg>
+    </div>
+
+    <p class="disclaimer">The common "flat ports cut FOV by 25%" rule understates the loss for wide lenses. This tool computes the exact geometry from <b>Snell's law</b>, so the frame width <b>W</b> it produces is the value to carry into the Baseline tool — not the air-rated width. Dome ports largely escape this; the course assumes flat consumer housings.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- PANELS 03–05 · PLACEHOLDERS                                   -->
+  <!-- ============================================================ -->
+  <section class="panel" id="panel-baseline" role="tabpanel">
+    <div class="panel-head">
+      <h2>Baseline &amp; <span class="em">Shutter Interval</span></h2>
+      <p>How far to move between photos to hit your overlap target, and the camera interval that produces it at swim speed.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Frame width on subject (W)</span><span class="hint">underwater · from Refraction</span></div>
+        <div class="in-row">
+          <input class="num" id="bl-W" type="number" inputmode="decimal" min="0" step="0.05" value="1.2" aria-label="Frame width in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+        </div>
+        <button class="chip" id="bl-pullW" type="button" style="margin-top:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Use W from Refraction (<span id="bl-refW">—</span> m)
+        </button>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Overlap</span><span class="hint">80% is the photogrammetry standard</span></div>
+        <div class="slider-row">
+          <input type="range" id="bl-overlap" min="50" max="95" step="5" value="80" aria-label="Overlap percent">
+          <span class="ov-val"><span id="bl-ovNum">80</span>%</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Swim speed (v)</span><span class="hint">0.3–0.5 m/s under task load</span></div>
+        <div class="slider-row">
+          <input type="range" id="bl-v" min="0.1" max="0.8" step="0.05" value="0.4" aria-label="Swim speed metres per second">
+          <span class="ov-val"><span id="bl-vNum">0.40</span></span>
+        </div>
+      </div>
+
+      <button class="chip" id="bl-example" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Load the Course Guide example (W = 1.2 m, 80%)
+      </button>
+
+      <div class="results">
+        <div class="readout">
+          <div class="rlabel">Baseline (B)</div>
+          <div class="rval"><span id="bl-outB">—</span><span class="runit">m</span></div>
+          <div class="rnote">distance between shutter clicks</div>
+        </div>
+        <div class="readout key">
+          <div class="rlabel">Shutter interval (t)</div>
+          <div class="rval"><span class="accent" id="bl-outT">—</span><span class="runit">s</span></div>
+          <div class="rnote" id="bl-tNote">set the intervalometer to this</div>
+        </div>
+      </div>
+
+      <div class="warn" id="bl-warn" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="bl-warnText"></span>
+      </div>
+    </div>
+
+    <div class="viz-title">Parallel-strip capture <span>frames advance by B and overlap by O</span></div>
+    <div class="viz">
+      <svg id="bl-viz" viewBox="0 0 360 170" role="img" aria-label="Overlapping camera frames along a strip">
+        <rect x="0" y="116" width="360" height="54" fill="var(--sand)"/>
+        <path d="M0 116 q 12 -5 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0" fill="none" stroke="var(--sand-deep)" stroke-width="2"/>
+        <line x1="10" y1="34" x2="350" y2="34" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 4" opacity=".4"/>
+        <text class="lbl-text" x="14" y="28" fill="var(--ink-soft)">swim path</text>
+        <g id="bl-frames"></g><g id="bl-dim"></g>
+      </svg>
+    </div>
+
+    <p class="disclaimer">Photogrammetry is a high-shot-density discipline — 80% overlap means each point appears in roughly five frames. <b>More overlap than planned is fine; less is not</b>, so when in doubt set a slightly faster interval. Feed the <b>underwater</b> frame width here, not the lens's air-rated width.</p>
+  </section>
+
+  <section class="panel" id="panel-orbit" role="tabpanel">
+    <div class="panel-head">
+      <h2>Orbit <span class="em">Frame Count</span></h2>
+      <p>Circling a target feature: the angular step between shots, and how many frames a full orbit needs to reconstruct it.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Orbit radius (r)</span><span class="hint">camera → target centre</span></div>
+        <div class="in-row">
+          <input class="num" id="ob-r" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Orbit radius in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Baseline (B)</span><span class="hint">from the Baseline tool</span></div>
+        <div class="in-row">
+          <input class="num" id="ob-B" type="number" inputmode="decimal" min="0" step="0.01" value="0.24" aria-label="Baseline in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+        </div>
+        <button class="chip" id="ob-pullB" type="button" style="margin-top:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Use B from Baseline (<span id="ob-blB">—</span> m)
+        </button>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Closure margin</span><span class="hint">extra frames to close the loop</span></div>
+        <div class="slider-row">
+          <input type="range" id="ob-margin" min="0" max="20" step="5" value="10" aria-label="Closure margin percent">
+          <span class="ov-val"><span id="ob-mNum">10</span>%</span>
+        </div>
+      </div>
+
+      <button class="chip" id="ob-example" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Load the Course Guide example (r = 2 m, B = 0.24 m)
+      </button>
+
+      <div class="results">
+        <div class="readout">
+          <div class="rlabel">Angular step (Δφ)</div>
+          <div class="rval"><span id="ob-outPhi">—</span><span class="runit">°</span></div>
+          <div class="rnote">Δφ = B / r per frame</div>
+        </div>
+        <div class="readout key">
+          <div class="rlabel">Frames per orbit</div>
+          <div class="rval"><span class="accent" id="ob-outN">—</span></div>
+          <div class="rnote" id="ob-nNote">with closure margin</div>
+        </div>
+      </div>
+
+      <div class="warn" id="ob-warn" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="ob-warnText"></span>
+      </div>
+    </div>
+
+    <div class="viz-title">Convergent orbit <span>top-down · cameras point inward at Δφ spacing</span></div>
+    <div class="viz">
+      <svg id="ob-viz" viewBox="0 0 360 260" role="img" aria-label="Top-down view of camera positions around an orbit">
+        <circle id="ob-circle" cx="180" cy="130" r="84" fill="none" stroke="var(--teal-500)" stroke-width="1.5" stroke-dasharray="4 5" opacity=".7"/>
+        <g id="ob-cams"></g>
+        <line id="ob-rline" x1="180" y1="130" x2="264" y2="130" stroke="var(--ink)" stroke-width="1.2"/>
+        <text id="ob-rlbl" class="dim-text" x="222" y="124" fill="var(--ink)" text-anchor="middle">r</text>
+        <circle cx="180" cy="130" r="11" fill="var(--coral)" opacity=".22"/>
+        <circle cx="180" cy="130" r="4" fill="var(--coral-600)"/>
+        <text class="lbl-text" x="180" y="156" fill="var(--coral-600)" text-anchor="middle">target</text>
+        <text id="ob-philbl" class="dim-text" x="180" y="34" fill="var(--teal-700)" text-anchor="middle">Δφ</text>
+      </svg>
+    </div>
+
+    <p class="disclaimer">Δφ = B / r is the small-angle approximation — fine for the tight baselines photogrammetry uses. The frame count is a planning floor; the closure margin gives you overlap back to the first frame so the loop reconstructs cleanly.</p>
+  </section>
+
+  <section class="panel" id="panel-accuracy" role="tabpanel">
+    <div class="panel-head">
+      <h2>Accuracy &amp; <span class="em">Limitations</span></h2>
+      <p>Your real inputs become an honest limitations statement to publish with the map — stating what was measured, not what you hoped. Adapt the wording to your site before you publish.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Site name</span><span class="hint">optional</span></div>
+        <div class="in-row"><input class="num" id="ac-site" type="text" value="" placeholder="e.g. Quarry A — NE quadrant" aria-label="Site name" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Surface GPS accuracy</span><span class="hint">consumer WAAS ≈ 3–5 m</span></div>
+        <div class="slider-row">
+          <input type="range" id="ac-gps" min="2" max="10" step="1" value="4" aria-label="GPS accuracy in metres">
+          <span class="ov-val">±<span id="ac-gpsNum">4</span> m</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Datum</span><span class="hint">positional reference frame</span></div>
+        <div class="seg" role="radiogroup" aria-label="Datum">
+          <input type="radio" name="acDatum" id="ac-wgs" value="WGS84" checked><label for="ac-wgs">WGS84</label>
+          <input type="radio" name="acDatum" id="ac-nad" value="NAD83"><label for="ac-nad">NAD83</label>
+          <input type="radio" name="acDatum" id="ac-mllw" value="MLLW (vertical)"><label for="ac-mllw">MLLW</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Scale reference</span><span class="hint">fixes the model's absolute size</span></div>
+        <div class="seg" role="radiogroup" aria-label="Scale reference status">
+          <input type="radio" name="acScale" id="ac-sv" value="verified" checked><label for="ac-sv">Measured<small>verified</small></label>
+          <input type="radio" name="acScale" id="ac-sn" value="nominal"><label for="ac-sn">Nominal<small>label only</small></label>
+          <input type="radio" name="acScale" id="ac-sx" value="none"><label for="ac-sx">None<small>no scale</small></label>
+        </div>
+        <div id="ac-lenWrap" class="in-row" style="margin-top:10px">
+          <input class="num" id="ac-len" type="number" inputmode="decimal" min="0" step="0.01" value="1.50" aria-label="Scale reference length in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">m measured</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Checkpoint residual</span><span class="hint">independent test · blank if none</span></div>
+        <div class="in-row">
+          <input class="num" id="ac-resid" type="number" inputmode="decimal" min="0" step="0.1" value="1.4" placeholder="—" aria-label="Checkpoint residual in metres">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">m</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Documented limitations</span><span class="hint">conditions, single-pass gaps, etc.</span></div>
+        <div class="in-row"><input class="num" id="ac-notes" type="text" value="" placeholder="e.g. single-pass coverage in the NE quadrant" aria-label="Documented limitations" style="font-family:var(--font-ui);font-size:.95rem"></div>
+      </div>
+    </div>
+
+    <div class="viz-title">Generated statement <span>attach this to the published map</span></div>
+    <div class="statement" id="ac-out"></div>
+    <button class="copybtn" id="ac-copy" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round"/></svg>
+      <span id="ac-copyLbl">Copy statement</span>
+    </button>
+
+    <p class="disclaimer">A good statement names the test, not the hope: it reports the measured checkpoint residual, names the dominant error sources, states what the map is good for, and explicitly disclaims what it is not. A missing or unverified scale reference is a stated limitation — never a silent gap.</p>
+  </section>
+
+  <div class="sponsor">Sponsor slot reserved</div>
+  <footer class="foot">
+    <span><b>Reef Cartographer</b> — Acoustic &amp; Optical Reef Mapping</span>
+    <span id="foot-tool">Tool 01 of 05</span>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+/* ===========================================================================
+   DEFENSIVE STORAGE (shared) — localStorage on the live site, in-memory in
+   the artifact preview where localStorage throws.
+   =========================================================================== */
+const Store = (() => {
+  const mem = {}; let ok = false;
+  try { const k="__rc__"; localStorage.setItem(k,"1"); localStorage.removeItem(k); ok=true; } catch(_){ ok=false; }
+  return {
+    get(k){ try{ return ok ? localStorage.getItem(k) : (mem[k] ?? null); }catch(_){ return mem[k] ?? null; } },
+    set(k,v){ try{ ok ? localStorage.setItem(k,v) : (mem[k]=v); }catch(_){ mem[k]=v; } }
+  };
+})();
+const $ = (id) => document.getElementById(id);
+const D2R = Math.PI/180, R2D = 180/Math.PI;
+const fmt = (x,d=2) => (Math.round(x*10**d)/10**d).toLocaleString(undefined,{maximumFractionDigits:d});
+
+/* ===========================================================================
+   TAB CONTROLLER — swaps panels, syncs URL hash, remembers last tab.
+   =========================================================================== */
+const TABS = ["footprint","refraction","baseline","orbit","accuracy"];
+const TABNUM = { footprint:"01", refraction:"02", baseline:"03", orbit:"04", accuracy:"05" };
+function setTab(name, push){
+  if(!TABS.includes(name)) name = "footprint";
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab===name));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id==="panel-"+name));
+  $("foot-tool").textContent = "Tool "+TABNUM[name]+" of 05";
+  Store.set("rc.tab", name);
+  if(push && location.hash.slice(1)!==name) history.replaceState(null,"","#"+name);
+  if(window.scrollY > 0) window.scrollTo({top:0, behavior:"smooth"});
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab, true)));
+window.addEventListener("hashchange", () => setTab(location.hash.slice(1), false));
+
+/* small SVG helper */
+const NS = "http://www.w3.org/2000/svg";
+function svgAdd(parent, tag, attrs){ const el=document.createElementNS(NS,tag); for(const k in attrs) el.setAttribute(k,attrs[k]); parent.appendChild(el); return el; }
+
+/* ===========================================================================
+   TOOL 01 · FOOTPRINT
+   =========================================================================== */
+const Footprint = (() => {
+  const FT_PER_M = 3.280839895;
+  const SKEY = "rc.footprint.v1";
+  const depthEl=$("fp-depth"), customEl=$("fp-customAngle"), overlapEl=$("fp-overlap"), ovNum=$("fp-ovNum");
+  let lastUnit = "ft";
+
+  const unit  = () => document.querySelector('input[name=fpUnit]:checked').value;
+  const beamCh= () => document.querySelector('input[name=fpBeam]:checked').value;
+  const angle = () => beamCh()==="custom" ? parseFloat(customEl.value) : parseFloat(beamCh());
+
+  const D = (d,th) => 2*d*Math.tan((th*D2R)/2);   // footprint diameter
+  const S = (D,O)  => D*(1-O/100);                 // lane spacing
+  const roundDown = (s,u) => { const step = (u==="m")?0.5:1; return Math.floor(s/step)*step; };
+
+  function compute(){
+    const u=unit(), d=parseFloat(depthEl.value), th=angle(), O=parseFloat(overlapEl.value);
+    ovNum.textContent=O; $("fp-unitD").textContent=u; $("fp-unitS").textContent=u;
+    $("fp-customWrap").style.display = beamCh()==="custom" ? "block" : "none";
+    depthEl.classList.toggle("bad", !(d>0));
+    customEl.classList.toggle("bad", beamCh()==="custom" && !(th>0&&th<180));
+
+    if(!(d>0) || !(th>0&&th<180)){
+      $("fp-outD").textContent="—"; $("fp-outS").textContent="—"; $("fp-sNote").textContent="enter depth & beam";
+      $("fp-cutLen").textContent="—";
+      drawSide(d>0?d:18,(th>0&&th<180)?th:7); drawTop(30); $("fp-warn").classList.remove("show"); persist(); return;
+    }
+    const dd=D(d,th), ss=S(dd,O), sr=roundDown(ss,u);
+    $("fp-outD").textContent=fmt(dd); $("fp-outS").textContent=fmt(sr);
+    $("fp-sNote").textContent="exact "+fmt(ss)+" "+u+" · rounded down";
+    $("fp-cutLen").innerHTML = fmt(sr)+' <span class="runit">'+u+'</span>';
+
+    let warn="";
+    if(th>=40)  warn="Wide beam: large footprint, low resolution. Good for fast coverage, poor for fine reef detail.";
+    if(sr<=0)   warn="Spacing rounds below your minimum increment — footprint is tiny relative to depth, or overlap is too high.";
+    if(O>=80)   warn="Very high overlap means many slow, tightly-spaced lanes — heavy on bottom time and gas.";
+    $("fp-warnText").textContent=warn; $("fp-warn").classList.toggle("show", warn!=="");
+    drawSide(d,th); drawTop(O); persist();
+  }
+
+  function drawSide(d,th){
+    const apexX=180, apexY=60, bedY=214, depthPx=bedY-apexY;
+    let halfPx=depthPx*Math.tan((th*D2R)/2); const clamped=halfPx>150; if(clamped) halfPx=150;
+    const lx=apexX-halfPx, rx=apexX+halfPx;
+    $("fp-cone").setAttribute("points",`${apexX},${apexY} ${lx},${bedY} ${rx},${bedY}`);
+    $("fp-coneL").setAttribute("x2",lx); $("fp-coneL").setAttribute("y2",bedY);
+    $("fp-coneR").setAttribute("x2",rx); $("fp-coneR").setAttribute("y2",bedY);
+    $("fp-footLine").setAttribute("x1",lx); $("fp-footLine").setAttribute("x2",rx);
+    $("fp-footTickL").setAttribute("x1",lx); $("fp-footTickL").setAttribute("x2",lx);
+    $("fp-footTickR").setAttribute("x1",rx); $("fp-footTickR").setAttribute("x2",rx);
+    const u=unit(), dd=D(d,th);
+    $("fp-depthLbl").textContent="d = "+fmt(d)+" "+u;
+    $("fp-footLbl").textContent=(clamped?"D ≈ ":"D = ")+fmt(dd)+" "+u;
+    $("fp-angleLbl").textContent="θ "+fmt(th)+"°";
+  }
+
+  function drawTop(O){
+    const lanesG=$("fp-lanes"), dimG=$("fp-spaceDim"); lanesG.innerHTML=""; dimG.innerHTML="";
+    const laneW=96, s=laneW*(1-O/100), startX=36, cy=70, h=80;
+    const centers=[startX, startX+s, startX+2*s, startX+3*s];
+    for(let i=0;i<centers.length-1;i++){
+      const aR=centers[i]+laneW/2, bL=centers[i+1]-laneW/2;
+      if(aR>bL) svgAdd(lanesG,"rect",{x:bL,y:cy-h/2,width:aR-bL,height:h,fill:"var(--coral)",opacity:".30"});
+    }
+    centers.forEach(c=>{
+      svgAdd(lanesG,"rect",{x:c-laneW/2,y:cy-h/2,width:laneW,height:h,rx:6,fill:"var(--teal-500)",opacity:".16",stroke:"var(--teal-700)","stroke-width":"1.4"});
+      svgAdd(lanesG,"line",{x1:c,x2:c,y1:cy-h/2,y2:cy+h/2,stroke:"var(--teal-700)","stroke-dasharray":"3 3",opacity:".6"});
+    });
+    const dimY=cy+h/2+16;
+    svgAdd(dimG,"line",{x1:centers[0],x2:centers[1],y1:dimY,y2:dimY,stroke:"var(--ink)","stroke-width":"1.2"});
+    svgAdd(dimG,"line",{x1:centers[0],x2:centers[0],y1:dimY-4,y2:dimY+4,stroke:"var(--ink)","stroke-width":"1.2"});
+    svgAdd(dimG,"line",{x1:centers[1],x2:centers[1],y1:dimY-4,y2:dimY+4,stroke:"var(--ink)","stroke-width":"1.2"});
+    svgAdd(dimG,"text",{x:(centers[0]+centers[1])/2,y:dimY-6,"text-anchor":"middle",fill:"var(--ink)",class:"dim-text"}).textContent="s";
+    if(O>0) svgAdd(dimG,"text",{x:centers[0]+laneW/2,y:cy+3,"text-anchor":"middle",fill:"var(--coral-600)",class:"lbl-text"}).textContent=O+"% overlap";
+  }
+
+  function persist(){ Store.set(SKEY, JSON.stringify({unit:unit(),beam:beamCh(),custom:customEl.value,overlap:overlapEl.value,depth:depthEl.value})); }
+  function restore(){
+    let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return;
+    if(s.depth) depthEl.value=s.depth; if(s.custom) customEl.value=s.custom; if(s.overlap) overlapEl.value=s.overlap;
+    const ub=$(s.unit==="m"?"fp-um":"fp-uft"); if(ub) ub.checked=true;
+    const bmap={"7":"fp-bn","20":"fp-bm","47":"fp-bw","custom":"fp-bc"}; const bb=$(bmap[s.beam]||"fp-bn"); if(bb) bb.checked=true;
+  }
+  function onUnit(){ const u=unit(), v=parseFloat(depthEl.value);
+    if(!isNaN(v)&&u!==lastUnit) depthEl.value = (u==="m") ? +(v/FT_PER_M).toFixed(2) : +(v*FT_PER_M).toFixed(1);
+    lastUnit=u; compute(); }
+
+  document.querySelectorAll('input[name=fpUnit]').forEach(r=>r.addEventListener("change",onUnit));
+  document.querySelectorAll('input[name=fpBeam]').forEach(r=>r.addEventListener("change",compute));
+  [depthEl,customEl,overlapEl].forEach(el=>el.addEventListener("input",compute));
+  $("fp-example").addEventListener("click",()=>{ $("fp-uft").checked=true; lastUnit="ft"; $("fp-bn").checked=true; depthEl.value=60; overlapEl.value=30; compute(); });
+
+  return { init(){ restore(); lastUnit=unit(); compute(); } };
+})();
+
+/* ===========================================================================
+   TOOL 02 · REFRACTION
+   ---------------------------------------------------------------------------
+   N_WATER is the single refractive-index constant. The course's FOV table is
+   computed with 1.33; its stated 48.6° critical angle implies 1.333. Pick one
+   here and the whole tool stays self-consistent.
+   =========================================================================== */
+const Refraction = (() => {
+  const N_WATER = 1.33;
+  const SKEY = "rc.refraction.v1";
+  const fovEl=$("rf-fov"), distEl=$("rf-dist");
+  const mode = () => document.querySelector('input[name=rfMode]:checked').value; // full | half
+  const port = () => document.querySelector('input[name=rfPort]:checked').value; // flat | dome
+
+  // underwater half-FOV from air half-FOV (Snell at a flat port)
+  const waterHalf = (airHalfDeg) => R2D*Math.asin(Math.min(1, Math.sin(airHalfDeg*D2R)/N_WATER));
+  // frame width on subject at distance L: exact geometry, W = 2 L tan(halfFOV)
+  const frameW = (halfDeg, L) => 2*L*Math.tan(halfDeg*D2R);
+
+  function compute(){
+    const raw=parseFloat(fovEl.value), L=parseFloat(distEl.value), isDome=port()==="dome";
+    const airHalf = mode()==="full" ? raw/2 : raw;
+    const ceilHalf = R2D*Math.asin(1/N_WATER);
+    $("rf-ceil").textContent = isDome ? "n/a (dome)" : fmt(ceilHalf,1)+"° half · "+fmt(2*ceilHalf,0)+"° full";
+    $("rf-domeArc").style.display = isDome ? "block" : "none";
+    $("rf-port").style.display     = isDome ? "none"  : "block";
+
+    fovEl.classList.toggle("bad", !(airHalf>0 && airHalf<90));
+    distEl.classList.toggle("bad", !(L>=0));
+
+    if(!(airHalf>0 && airHalf<90) || !(L>=0)){
+      ["rf-outFull","rf-outHalf","rf-airFull","rf-outWwater","rf-outWair","rf-outRed"].forEach(id=>$(id).textContent="—");
+      draw(isDome?40:40, isDome); $("rf-warn").classList.remove("show"); persist(); return;
+    }
+
+    const wHalf = isDome ? airHalf : waterHalf(airHalf);
+    const reduction = isDome ? 0 : (1 - wHalf/airHalf)*100;
+    const Wair  = frameW(airHalf, L);
+    const Wwater= frameW(wHalf,  L);
+    Store.set("rc.refraction.W", fmt(Wwater,2));
+
+    $("rf-outFull").textContent = fmt(2*wHalf,1);
+    $("rf-outHalf").textContent = fmt(wHalf,1);
+    $("rf-airFull").textContent = fmt(2*airHalf,0);
+    $("rf-outWwater").textContent = fmt(Wwater,2);
+    $("rf-outWair").textContent   = fmt(Wair,2);
+    $("rf-outRed").textContent    = isDome ? "0% (dome)" : fmt(reduction,0)+"%";
+
+    let warn="";
+    if(isDome) warn="Dome port: it preserves the air-rated FOV, so no refraction correction is applied. The course assumes flat consumer housings — confirm your housing before relying on this.";
+    else if(airHalf>=75) warn="Very wide lens: a flat port caps the underwater half-FOV at the critical angle. A 180° fisheye delivers only ~"+fmt(2*ceilHalf,0)+"° underwater — the frame edges never reach the sensor.";
+    else if(airHalf>=60) warn="Wide action-cam lens: the flat-port FOV loss is well above the '25% rule of thumb'. Use this W, not the spec-sheet width, for the baseline.";
+    $("rf-warnText").textContent=warn; $("rf-warn").classList.toggle("show", warn!=="");
+
+    draw(airHalf, isDome); persist();
+  }
+
+  /* schematic: cap drawn air half-angle so it fits; derive water angle by the
+     same Snell rule so the kink reads correctly. Numbers in readouts are exact. */
+  function draw(airHalfReal, isDome){
+    const lensX=270, portX=150, axis=120;
+    const drawnAir = Math.min(airHalfReal, 42);
+    const drawnWat = isDome ? drawnAir : R2D*Math.asin(Math.min(1,Math.sin(drawnAir*D2R)/N_WATER));
+    const dyPort = (lensX-portX)*Math.tan(drawnAir*D2R);          // half-height at port
+    const topP=axis-dyPort, botP=axis+dyPort;
+    const leftX=10, run=portX-leftX;
+    const dyLeft = run*Math.tan(drawnWat*D2R);
+    const topL=topP-dyLeft, botL=botP+dyLeft;
+
+    $("rf-airT").setAttribute("x2",portX); $("rf-airT").setAttribute("y2",topP);
+    $("rf-airB").setAttribute("x2",portX); $("rf-airB").setAttribute("y2",botP);
+    $("rf-watT").setAttribute("x1",portX); $("rf-watT").setAttribute("y1",topP); $("rf-watT").setAttribute("x2",leftX); $("rf-watT").setAttribute("y2",topL);
+    $("rf-watB").setAttribute("x1",portX); $("rf-watB").setAttribute("y1",botP); $("rf-watB").setAttribute("x2",leftX); $("rf-watB").setAttribute("y2",botL);
+    $("rf-airFill").setAttribute("points",`${lensX},${axis} ${portX},${topP} ${portX},${botP}`);
+    $("rf-waterFill").setAttribute("points",`${portX},${topP} ${leftX},${topL} ${leftX},${botL} ${portX},${botP}`);
+    if(isDome) $("rf-domeArc").setAttribute("d",`M150 40 Q 128 120 150 200`);
+    $("rf-airLbl").textContent = "θa "+fmt(airHalfReal,0)+"°";
+    $("rf-watLbl").textContent = isDome ? "= θa" : "θw "+fmt(isDome?airHalfReal:waterHalf(airHalfReal),1)+"°";
+  }
+
+  function persist(){ Store.set(SKEY, JSON.stringify({mode:mode(),port:port(),fov:fovEl.value,dist:distEl.value})); }
+  function restore(){
+    let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return;
+    if(s.fov) fovEl.value=s.fov; if(s.dist) distEl.value=s.dist;
+    const mm=$(s.mode==="half"?"rf-half":"rf-full"); if(mm) mm.checked=true;
+    const pp=$(s.port==="dome"?"rf-dome":"rf-flat"); if(pp) pp.checked=true;
+  }
+  document.querySelectorAll('input[name=rfMode]').forEach(r=>r.addEventListener("change",compute));
+  document.querySelectorAll('input[name=rfPort]').forEach(r=>r.addEventListener("change",compute));
+  [fovEl,distEl].forEach(el=>el.addEventListener("input",compute));
+  $("rf-example").addEventListener("click",()=>{ $("rf-half").checked=true; $("rf-flat").checked=true; fovEl.value=45; distEl.value=2; compute(); });
+
+  return { init(){ restore(); compute(); } };
+})();
+
+/* ===========================================================================
+   TOOL 03 · BASELINE & SHUTTER INTERVAL
+   =========================================================================== */
+const Baseline = (() => {
+  const SKEY="rc.baseline.v1";
+  const Wel=$("bl-W"), ovEl=$("bl-overlap"), vEl=$("bl-v");
+  function compute(){
+    const W=parseFloat(Wel.value), O=parseFloat(ovEl.value), v=parseFloat(vEl.value);
+    $("bl-ovNum").textContent=O; $("bl-vNum").textContent=fmt(v,2);
+    $("bl-refW").textContent = Store.get("rc.refraction.W") || "—";
+    Wel.classList.toggle("bad", !(W>0)); vEl.classList.toggle("bad", !(v>0));
+    if(!(W>0)||!(O>=0)||!(v>0)){
+      $("bl-outB").textContent="—"; $("bl-outT").textContent="—"; $("bl-tNote").textContent="enter W and speed";
+      draw(0.2,80); $("bl-warn").classList.remove("show"); persist(); return;
+    }
+    const B=W*(1-O/100), t=B/v;
+    $("bl-outB").textContent=fmt(B,2); $("bl-outT").textContent=fmt(t,2);
+    // recommend a conservative whole/handy interval at or below t (more overlap, never less)
+    let rec; if(t>=1) rec="set ~"+Math.floor(t)+" s (round down)"; else rec="set 1 shot/s — a safe margin";
+    $("bl-tNote").textContent=rec;
+    let warn="";
+    if(O>=90) warn="Very high overlap → very tight spacing and a heavy frame count. Watch bottom time and storage.";
+    else if(O<60) warn="Below ~60% overlap, feature matching gets fragile and reconstruction may fail. 70–80% is the safe band.";
+    $("bl-warnText").textContent=warn; $("bl-warn").classList.toggle("show",warn!=="");
+    draw(W,O); persist();
+  }
+  function draw(W,O){
+    const g=$("bl-frames"), dim=$("bl-dim"); g.innerHTML=""; dim.innerHTML="";
+    const camY=34, subjY=116, fw=104, b=fw*(1-O/100), startX=40;
+    const cams=[startX,startX+b,startX+2*b,startX+3*b];
+    // overlap shading on subject
+    for(let i=0;i<cams.length-1;i++){ const aR=cams[i]+fw/2, bL=cams[i+1]-fw/2; if(aR>bL) svgAdd(g,"rect",{x:bL,y:subjY-30,width:aR-bL,height:30,fill:"var(--coral)",opacity:".30"}); }
+    cams.forEach(c=>{
+      svgAdd(g,"rect",{x:c-fw/2,y:subjY-30,width:fw,height:30,fill:"var(--teal-500)",opacity:".15",stroke:"var(--teal-700)","stroke-width":"1.2"});
+      svgAdd(g,"line",{x1:c,y1:camY+6,x2:c-fw/2,y2:subjY-30,stroke:"var(--ink)","stroke-width":".7",opacity:".35"});
+      svgAdd(g,"line",{x1:c,y1:camY+6,x2:c+fw/2,y2:subjY-30,stroke:"var(--ink)","stroke-width":".7",opacity:".35"});
+      svgAdd(g,"circle",{cx:c,cy:camY,r:5,fill:"var(--ink)"});
+    });
+    const dy=camY-12;
+    svgAdd(dim,"line",{x1:cams[0],x2:cams[1],y1:dy,y2:dy,stroke:"var(--coral-600)","stroke-width":"1.3"});
+    svgAdd(dim,"line",{x1:cams[0],x2:cams[0],y1:dy-4,y2:dy+4,stroke:"var(--coral-600)","stroke-width":"1.3"});
+    svgAdd(dim,"line",{x1:cams[1],x2:cams[1],y1:dy-4,y2:dy+4,stroke:"var(--coral-600)","stroke-width":"1.3"});
+    svgAdd(dim,"text",{x:(cams[0]+cams[1])/2,y:dy-5,"text-anchor":"middle",fill:"var(--coral-600)",class:"dim-text"}).textContent="B";
+    svgAdd(dim,"text",{x:cams[0],y:subjY-10,"text-anchor":"middle",fill:"var(--teal-700)",class:"lbl-text"}).textContent=O+"% overlap";
+  }
+  function persist(){ Store.set(SKEY, JSON.stringify({W:Wel.value,O:ovEl.value,v:vEl.value})); Store.set("rc.baseline.B", $("bl-outB").textContent); }
+  function restore(){ let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return; if(s.W) Wel.value=s.W; if(s.O) ovEl.value=s.O; if(s.v) vEl.value=s.v; }
+  [Wel,ovEl,vEl].forEach(el=>el.addEventListener("input",compute));
+  $("bl-pullW").addEventListener("click",()=>{ const w=Store.get("rc.refraction.W"); if(w&&w!=="—"){ Wel.value=w; compute(); } });
+  $("bl-example").addEventListener("click",()=>{ Wel.value=1.2; ovEl.value=80; vEl.value=0.4; compute(); });
+  return { init(){ restore(); compute(); } };
+})();
+
+/* ===========================================================================
+   TOOL 04 · ORBIT FRAME COUNT
+   =========================================================================== */
+const Orbit = (() => {
+  const SKEY="rc.orbit.v1";
+  const rEl=$("ob-r"), BEl=$("ob-B"), mEl=$("ob-margin");
+  function compute(){
+    const r=parseFloat(rEl.value), B=parseFloat(BEl.value), m=parseFloat(mEl.value);
+    $("ob-mNum").textContent=m; $("ob-blB").textContent = Store.get("rc.baseline.B") || "—";
+    rEl.classList.toggle("bad", !(r>0)); BEl.classList.toggle("bad", !(B>0));
+    if(!(r>0)||!(B>0)){ $("ob-outPhi").textContent="—"; $("ob-outN").textContent="—"; $("ob-nNote").textContent="enter r and B"; draw(36); $("ob-warn").classList.remove("show"); persist(); return; }
+    const phiRad=B/r, phiDeg=phiRad*R2D;
+    const base=2*Math.PI*r/B;            // = 360/phiDeg
+    const N=Math.ceil(base*(1+m/100));
+    $("ob-outPhi").textContent=fmt(phiDeg,1); $("ob-outN").textContent=N;
+    $("ob-nNote").textContent="≈"+Math.ceil(base)+" + "+m+"% closure";
+    let warn="";
+    if(phiDeg>15) warn="Δφ above ~15° strains the small-angle approximation and may leave gaps between frames. Reduce baseline or increase radius.";
+    $("ob-warnText").textContent=warn; $("ob-warn").classList.toggle("show",warn!=="");
+    draw(N); persist();
+  }
+  function draw(N){
+    const g=$("ob-cams"); g.innerHTML="";
+    const cx=180, cy=130, R=84;
+    const shown=Math.max(3, Math.min(N, 48));
+    for(let i=0;i<shown;i++){
+      const a=-Math.PI/2 + i*(2*Math.PI/shown);
+      const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+      svgAdd(g,"line",{x1:x,y1:y,x2:cx+(R-13)*Math.cos(a),y2:cy+(R-13)*Math.sin(a),stroke:"var(--teal-700)","stroke-width":"1",opacity:".5"});
+      svgAdd(g,"circle",{cx:x,cy:y,r:3.4,fill:"var(--teal-700)"});
+    }
+    $("ob-philbl").textContent="Δφ = "+$("ob-outPhi").textContent+"°";
+    $("ob-rlbl").textContent="r = "+fmt(parseFloat(rEl.value),1)+" m";
+  }
+  function persist(){ Store.set(SKEY, JSON.stringify({r:rEl.value,B:BEl.value,m:mEl.value})); }
+  function restore(){ let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return; if(s.r) rEl.value=s.r; if(s.B) BEl.value=s.B; if(s.m) mEl.value=s.m; }
+  [rEl,BEl,mEl].forEach(el=>el.addEventListener("input",compute));
+  $("ob-pullB").addEventListener("click",()=>{ const b=Store.get("rc.baseline.B"); if(b&&b!=="—"){ BEl.value=b; compute(); } });
+  $("ob-example").addEventListener("click",()=>{ rEl.value=2; BEl.value=0.24; mEl.value=10; compute(); });
+  return { init(){ restore(); compute(); } };
+})();
+
+/* ===========================================================================
+   TOOL 05 · ACCURACY & LIMITATIONS STATEMENT BUILDER
+   ---------------------------------------------------------------------------
+   A form → honest paragraph. Parameterised prose, not pasted manual text.
+   =========================================================================== */
+const Accuracy = (() => {
+  const SKEY="rc.accuracy.v1";
+  const siteEl=$("ac-site"), gpsEl=$("ac-gps"), residEl=$("ac-resid"), notesEl=$("ac-notes"), lenEl=$("ac-len");
+  const datum = () => document.querySelector('input[name=acDatum]:checked').value;
+  const scale = () => document.querySelector('input[name=acScale]:checked').value;
+
+  function build(){
+    const gps=parseFloat(gpsEl.value), hi=gps+3;          // GPS + float-lag band
+    $("ac-gpsNum").textContent=gps;
+    $("ac-lenWrap").style.display = (scale()==="none") ? "none" : "flex";
+    const len=parseFloat(lenEl.value), resid=parseFloat(residEl.value), notes=notesEl.value.trim(), site=siteEl.value.trim();
+
+    let scaleClause, scaleMiss=false;
+    if(scale()==="verified") scaleClause = `Absolute scale was fixed by a measured reference of ${isFinite(len)?fmt(len,2):"—"} m placed in frame and independently verified.`;
+    else if(scale()==="nominal") scaleClause = `A scale reference of nominal length ${isFinite(len)?fmt(len,2):"—"} m was used, but the length was not independently verified; the model's absolute size carries that uncertainty as a stated limitation.`;
+    else { scaleClause = `No absolute scale reference was used: the model is correct in shape but its absolute size is unknown — a significant limitation.`; scaleMiss=true; }
+
+    const checkClause = isFinite(resid)
+      ? `An independent checkpoint, not used in the fit, showed a residual of approximately ${fmt(resid,1)} m.`
+      : `No independent checkpoint was held out, so registration accuracy is estimated rather than measured.`;
+
+    const sitePrefix = site ? `${site}. ` : "";
+    const notesClause = notes ? ` ${notes.charAt(0).toUpperCase()+notes.slice(1)} is documented as a limitation.` : "";
+
+    const html =
+      `${sitePrefix}This map combines a bathymetric DEM from acoustic survey (Deeper Smart Sonar Max, towed at the surface) with a photogrammetric product captured by underwater camera. `+
+      `${checkClause} `+
+      `<span class="${scaleMiss?'miss':''}">${scaleClause}</span> `+
+      `Absolute horizontal accuracy is estimated at ±${gps}–${hi} m, limited primarily by consumer GPS on the surface float and float lag during turns; positions are referenced to ${datum()}. `+
+      `Vertical bathymetric resolution is sub-metre; photogrammetric relative shape is sub-metre where the scale reference was visible.${notesClause} `+
+      `This is a recreational and educational reef-documentation product — not survey-grade. It is suitable for diver orientation, site documentation, and change detection between surveys, and must not be used for navigation, legal boundary determination, salvage planning, or any safety-of-life application.`;
+
+    $("ac-out").innerHTML = html;
+    persist();
+  }
+  function plain(){ return $("ac-out").textContent; }
+
+  function persist(){ Store.set(SKEY, JSON.stringify({site:siteEl.value,gps:gpsEl.value,datum:datum(),scale:scale(),len:lenEl.value,resid:residEl.value,notes:notesEl.value})); }
+  function restore(){
+    let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return;
+    if(s.site!=null) siteEl.value=s.site; if(s.gps) gpsEl.value=s.gps; if(s.len) lenEl.value=s.len;
+    if(s.resid!=null) residEl.value=s.resid; if(s.notes!=null) notesEl.value=s.notes;
+    const d={"WGS84":"ac-wgs","NAD83":"ac-nad","MLLW (vertical)":"ac-mllw"}[s.datum]; if(d&&$(d)) $(d).checked=true;
+    const sc={"verified":"ac-sv","nominal":"ac-sn","none":"ac-sx"}[s.scale]; if(sc&&$(sc)) $(sc).checked=true;
+  }
+  [siteEl,gpsEl,residEl,notesEl,lenEl].forEach(el=>el.addEventListener("input",build));
+  document.querySelectorAll('input[name=acDatum],input[name=acScale]').forEach(r=>r.addEventListener("change",build));
+  $("ac-copy").addEventListener("click", async () => {
+    const txt=plain(); let ok=false;
+    try{ await navigator.clipboard.writeText(txt); ok=true; }
+    catch(_){ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); ok=document.execCommand("copy"); document.body.removeChild(ta); }catch(__){ ok=false; } }
+    const btn=$("ac-copy"), lbl=$("ac-copyLbl");
+    lbl.textContent = ok ? "Copied" : "Select & copy manually"; btn.classList.toggle("done",ok);
+    setTimeout(()=>{ lbl.textContent="Copy statement"; btn.classList.remove("done"); }, 2200);
+  });
+  return { init(){ restore(); build(); } };
+})();
+
+/* ===========================================================================
+   INIT
+   =========================================================================== */
+Footprint.init();
+Refraction.init();
+Baseline.init();
+Orbit.init();
+Accuracy.init();
+setTab(location.hash.slice(1) || Store.get("rc.tab") || "footprint", false);
+
+/* register the service worker for offline/PWA — guarded so it never errors */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reef Cartographer — Acoustic &amp; Optical Reef Mapping</title>
+<meta name="description" content="A distinctive diver specialty: produce georeferenced reef maps from consumer sonar and photogrammetry, built around no-contact conservation and repeatable change detection.">
+<meta name="theme-color" content="#f3ecdd">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="var(--coral)" stroke="none"/></svg>
+      Reef Cartographer
+    </a>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="course.html">The Course</a>
+      <a href="tools.html">Tools</a>
+      <a href="enroll.html" class="cta">Enroll</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <svg class="hero-contours" viewBox="0 0 1040 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#1c8597" stroke-width="1.1" opacity="0.45">
+      <path d="M-40 360 Q 260 300 520 350 T 1080 330"/>
+      <path d="M-40 400 Q 260 330 520 392 T 1080 372"/>
+      <path d="M-40 442 Q 260 366 520 436 T 1080 416"/>
+      <path d="M-40 486 Q 260 404 520 482 T 1080 462"/>
+    </g>
+    <g fill="none" stroke="#0e4c5e" stroke-width="1" opacity="0.3">
+      <ellipse cx="820" cy="150" rx="240" ry="120"/>
+      <ellipse cx="820" cy="150" rx="170" ry="84"/>
+      <ellipse cx="820" cy="150" rx="100" ry="48"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div class="kicker">Distinctive Diver Specialty</div>
+    <h1>Map the reef. <span class="em">Watch it change.</span></h1>
+    <p class="lede">A recreational specialty that teaches certified divers to produce georeferenced reef maps — pairing castable sonar for the seabed with photogrammetry for the reef itself — without ever touching living coral.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="enroll.html">Enroll in the specialty
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="tools.html">Open the survey tools</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHAT IT IS ===================== -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="eyebrow">What you'll make</div>
+    <h2 class="sec">Two instruments, <span class="em">one honest map</span></h2>
+    <div class="prose">
+      <p>The seabed around a reef — the sand flats, slopes, and channels that frame it — is mapped acoustically with a towed surface sonar. The reef itself is documented optically, frame by frame, with no contact. You then register the two datasets into a single map carrying a stated accuracy.</p>
+      <p class="muted">The result is a documented, repeatable record of a site's structure that can be re-surveyed later to reveal what changed — growth, recession, bleaching, storm damage, recovery. That repeatability is the point of the specialty.</p>
+    </div>
+    <div class="note coral" style="margin-top:26px; max-width:64ch">
+      <b>Recreational and educational only.</b> These maps are accurate to a few metres absolute — not survey-grade, navigation-grade, or scientific-survey products. Every map you publish carries an accuracy and limitations statement. That honesty is what makes citizen-science data trustworthy.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TOOLS TEASER ===================== -->
+<section class="band">
+  <div class="wrap">
+    <div class="eyebrow">Free public tools</div>
+    <h2 class="sec">Plan every dive <span class="em">before you splash</span></h2>
+    <p class="sec-lede">Five client-side calculators turn the geometry of the course into pre-dive numbers — no login, no app, works offline once loaded.</p>
+    <div class="grid cols-3">
+      <a class="card" href="tools.html#footprint" style="text-decoration:none">
+        <div class="num">01</div><h3>Footprint &amp; Grid Spacing</h3>
+        <p>Sonar footprint from depth and beam angle, and the lane spacing for gap-free coverage.</p>
+        <div class="formula">D = 2 d·tan(θ/2)</div>
+      </a>
+      <a class="card" href="tools.html#refraction" style="text-decoration:none">
+        <div class="num">02</div><h3>Refraction &amp; FOV</h3>
+        <p>The true underwater field of view through a flat port, and the corrected frame width.</p>
+        <div class="formula">α<sub>w</sub> = arcsin(sin α<sub>a</sub> / n)</div>
+      </a>
+      <a class="card" href="tools.html#baseline" style="text-decoration:none">
+        <div class="num">03</div><h3>Baseline &amp; Shutter</h3>
+        <p>How far to move between photos for your overlap, and the camera interval at swim speed.</p>
+        <div class="formula">B = W(1−O) · t = B/v</div>
+      </a>
+      <a class="card" href="tools.html#orbit" style="text-decoration:none">
+        <div class="num">04</div><h3>Orbit Frame Count</h3>
+        <p>Angular step and frame count to circle a target feature with enough overlap.</p>
+        <div class="formula">Δφ = B/r · N ≈ 2πr/B</div>
+      </a>
+      <a class="card" href="tools.html#accuracy" style="text-decoration:none">
+        <div class="num">05</div><h3>Accuracy Statement</h3>
+        <p>Your real GPS, scale, datum and checkpoint inputs become an honest limitations statement.</p>
+        <div class="formula">inputs → honest statement</div>
+      </a>
+      <a class="card" href="tools.html" style="text-decoration:none; display:flex; flex-direction:column; justify-content:center; background:var(--ink); color:var(--white)">
+        <h3 style="color:var(--white)">Open all five →</h3>
+        <p style="color:var(--teal-300)">One tabbed app. Each tool feeds the next.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PREREQUISITES ===================== -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="eyebrow">Before you enroll</div>
+    <h2 class="sec">Prerequisites &amp; <span class="em">recommendations</span></h2>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Required</h3>
+        <ul class="ticks">
+          <li><b>PADI Advanced Open Water</b> (or equivalent) — comfortable with navigation and task loading.</li>
+          <li><b>PADI Enriched Air (Nitrox)</b> — the course dives are conducted on an analyzed mix.</li>
+          <li>Solid, demonstrable buoyancy control — this is a no-contact, high-task-load specialty.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Recommended</h3>
+        <ul class="ticks">
+          <li><b>PADI Peak Performance Buoyancy</b> — the single biggest predictor of clean data and protected coral.</li>
+          <li><b>PADI AWARE Specialty</b> — the natural conservation companion to reef mapping.</li>
+          <li>Counts as one of five specialties toward <b>PADI Master Scuba Diver</b>, subject to PADI's approval.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:24px; max-width:66ch">Reef Cartographer is an independent distinctive specialty. The PADI courses above are named as genuine prerequisites and recommendations — Reef Cartographer is not a PADI-owned course.</p>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="band">
+  <div class="wrap narrow" style="text-align:center">
+    <h2 class="sec" style="margin:0 auto">Ready to start <span class="em">mapping?</span></h2>
+    <p class="sec-lede" style="margin:14px auto 0">Send an enrollment enquiry and we'll get back to you with dates, sites, and equipment guidance.</p>
+    <div class="btn-row" style="justify-content:center">
+      <a class="btn btn-primary" href="enroll.html">Enroll now
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="course.html">Read the course detail</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">Reef Cartographer<span>Acoustic &amp; Optical Reef Mapping</span></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="course.html">The Course</a>
+        <a href="tools.html">Tools</a>
+        <a href="enroll.html">Enroll</a>
+      </nav>
+    </div>
+    <div class="sponsor">Sponsor slot reserved</div>
+    <div class="ft-base">
+      <span>Recreational &amp; educational mapping — not survey-grade or navigation-grade.</span>
+      <span><b>reefcartographer.com</b></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* register the service worker for offline/PWA — guarded so it never errors */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
