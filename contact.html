@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Reef Cartographer</title>
+<meta name="description" content="Questions about the Reef Cartographer specialty — dates, locations, prerequisites, or whether it's a fit? Get in touch.">
+<meta name="theme-color" content="#f3ecdd">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="var(--coral)" stroke="none"/></svg>
+      Reef Cartographer
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="course.html">The Course</a>
+      <a href="tools.html">Tools</a>
+      <a href="contact.html" class="cta active">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap narrow">
+    <div class="eyebrow">Contact</div>
+    <h2 class="sec">Have a question? <span class="em">Get in touch.</span></h2>
+    <p class="sec-lede">Questions about the specialty — dates, locations, prerequisites, or whether it's a fit for you? Send a note and we'll get back to you by email. Course availability depends on location, so let us know where you're based and we'll tell you what's realistic.</p>
+
+    <!-- Netlify Forms: static-detected at deploy; submissions land in your
+         Netlify dashboard. The destination email is configured in Netlify
+         settings, never in this page's source. Honeypot guards against bots. -->
+    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" class="form" style="margin-top:28px">
+      <input type="hidden" name="form-name" value="contact">
+      <p class="hp"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+      <div class="frow">
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="frow">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="frow">
+        <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+      </div>
+      <div class="frow">
+        <label for="f-loc">Where are you based? <span class="opt">(city / country)</span></label>
+        <input id="f-loc" name="location" type="text" autocomplete="address-level2" placeholder="e.g. Brisbane, Australia">
+      </div>
+      <div class="frow">
+        <label for="f-msg">How can we help?</label>
+        <textarea id="f-msg" name="message" placeholder="What would you like to know? Dates, locations, prerequisites, fit…" required></textarea>
+      </div>
+
+      <button class="btn btn-primary" type="submit">Send message
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+
+    <p class="note" style="margin-top:24px">This form is for questions and information — not payment or sign-up. We'll follow up by email. Curious about prerequisites? They're <b>PADI Advanced Open Water</b> and <b>Enriched Air (Nitrox)</b>, with <b>Peak Performance Buoyancy</b> recommended — see <a href="course.html">the course detail</a>.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">Reef Cartographer<span>Acoustic &amp; Optical Reef Mapping</span></div>
+      <nav>
+        <a href="index.html">Home</a><a href="course.html">The Course</a><a href="tools.html">Tools</a><a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="sponsor">Sponsor slot reserved</div>
+    <div class="ft-base">
+      <span>Recreational &amp; educational mapping — not survey-grade or navigation-grade.</span>
+      <span><b>reefcartographer.com</b></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+if ("serviceWorker" in navigator) { window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); }); }
+</script>
+</body>
+</html>
