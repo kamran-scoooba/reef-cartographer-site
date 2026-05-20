@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thanks — Reef Cartographer</title>
+<meta name="description" content="Your message has been received. We'll be in touch by email.">
+<meta name="theme-color" content="#f3ecdd">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="var(--coral)" stroke="none"/></svg>
+      Reef Cartographer
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="course.html">The Course</a>
+      <a href="tools.html">Tools</a>
+      <a href="contact.html" class="cta active">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap narrow" style="text-align:center">
+
+    <svg viewBox="0 0 96 96" width="84" height="84" fill="none" style="margin:0 auto 6px;display:block" aria-hidden="true">
+      <circle cx="48" cy="48" r="44" stroke="var(--ink)" stroke-opacity=".16" stroke-width="1.4"/>
+      <circle cx="48" cy="48" r="33" stroke="var(--ink)" stroke-opacity=".16" stroke-width="1.4"/>
+      <circle cx="48" cy="48" r="22" fill="var(--coral)" fill-opacity=".12" stroke="var(--coral)" stroke-width="1.6"/>
+      <path d="M40 48.5l5.5 5.5L57 42" stroke="var(--coral)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <div class="eyebrow">Contact</div>
+    <h2 class="sec" style="margin:0 auto">Message <span class="em">received.</span></h2>
+    <p class="sec-lede" style="margin:14px auto 0">Thanks for getting in touch. Your note is on its way to us, and we'll reply by email — usually within a few days. If you told us where you're based, we'll let you know what's realistic from there.</p>
+
+    <div class="btn-row" style="justify-content:center;margin-top:28px">
+      <a class="btn btn-primary" href="index.html">Back to home
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="tools.html">Open the survey tools</a>
+    </div>
+
+    <p class="note" style="margin:26px auto 0">While you wait, you can <a href="course.html">read the course detail</a> or try the <a href="tools.html">planning calculators</a>.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">Reef Cartographer<span>Acoustic &amp; Optical Reef Mapping</span></div>
+      <nav>
+        <a href="index.html">Home</a><a href="course.html">The Course</a><a href="tools.html">Tools</a><a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="sponsor">Sponsor slot reserved</div>
+    <div class="ft-base">
+      <span>Recreational &amp; educational mapping — not survey-grade or navigation-grade.</span>
+      <span><b>reefcartographer.com</b></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+if ("serviceWorker" in navigator) { window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); }); }
+</script>
+</body>
+</html>

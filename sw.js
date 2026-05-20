@@ -1,11 +1,12 @@
 /* Reef Cartographer service worker — offline-installable PWA.
    Bump CACHE when you change any cached file so clients refresh. */
-const CACHE = "reef-carto-v8";
+const CACHE = "reef-carto-v9";
 const CORE = [
   "index.html",
   "course.html",
   "tools.html",
   "contact.html",
+  "thanks.html",
   "styles.css",
   "manifest.webmanifest",
   "favicon.ico",
