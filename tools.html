@@ -233,6 +233,8 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
 .planbtn:hover{ background:var(--teal-700); }
 .planbtn svg{ width:17px; height:17px; }
 .planhint{ font-size:.78rem; color:var(--ink-soft); max-width:46ch; }
+.unitsw{ display:flex; align-items:center; gap:9px; }
+.unitsw-lbl{ font-size:.78rem; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; }
 
 /* ---- Print slate: hidden on screen ---- */
 #plan-slate{ display:none; }
@@ -316,6 +318,13 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
   </div>
 
   <div class="planbar">
+    <div class="unitsw">
+      <span class="unitsw-lbl">Units</span>
+      <div class="seg tight" role="radiogroup" aria-label="Units">
+        <input type="radio" name="uUnit" id="u-metric" value="metric" checked><label for="u-metric">Metric</label>
+        <input type="radio" name="uUnit" id="u-imperial" value="imperial"><label for="u-imperial">Imperial</label>
+      </div>
+    </div>
     <button class="planbtn" id="print-plan" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Print / Save as PDF
@@ -346,11 +355,8 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       <div class="field">
         <div class="label"><span class="name">Water depth</span><span class="hint">surface float → bottom<br>not your diver depth</span></div>
         <div class="in-row">
-          <input class="num" id="fp-depth" type="number" inputmode="decimal" min="0" step="0.5" value="60" aria-label="Water depth">
-          <div class="seg tight" role="radiogroup" aria-label="Depth units">
-            <input type="radio" name="fpUnit" id="fp-uft" value="ft" checked><label for="fp-uft">ft</label>
-            <input type="radio" name="fpUnit" id="fp-um" value="m"><label for="fp-um">m</label>
-          </div>
+          <input class="num" id="fp-depth" type="number" inputmode="decimal" min="0" step="0.5" value="18" aria-label="Water depth">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
       </div>
 
@@ -504,8 +510,8 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       <div class="field">
         <div class="label"><span class="name">Subject distance</span><span class="hint">lens → reef · for frame width</span></div>
         <div class="in-row">
-          <input class="num" id="rf-dist" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Subject distance in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+          <input class="num" id="rf-dist" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Subject distance">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
       </div>
 
@@ -522,8 +528,8 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
         </div>
         <div class="readout key">
           <div class="rlabel">Frame width (W)</div>
-          <div class="rval"><span class="accent" id="rf-outWwater">—</span><span class="runit">m</span></div>
-          <div class="rnote">underwater · feeds Baseline · was <span id="rf-outWair">—</span> m in air</div>
+          <div class="rval"><span class="accent" id="rf-outWwater">—</span><span class="runit u-len">m</span></div>
+          <div class="rnote">underwater · feeds Baseline · was <span id="rf-outWair">—</span> <span class="u-len">m</span> in air</div>
         </div>
       </div>
 
@@ -586,8 +592,8 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       <div class="field">
         <div class="label"><span class="name">Frame width on subject (W)</span><span class="hint">underwater · from Refraction</span></div>
         <div class="in-row">
-          <input class="num" id="bl-W" type="number" inputmode="decimal" min="0" step="0.05" value="1.2" aria-label="Frame width in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+          <input class="num" id="bl-W" type="number" inputmode="decimal" min="0" step="0.05" value="1.2" aria-label="Frame width">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
         <button class="chip" id="bl-pullW" type="button" style="margin-top:10px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -607,7 +613,7 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
         <div class="label"><span class="name">Swim speed (v)</span><span class="hint">0.3–0.5 m/s under task load</span></div>
         <div class="slider-row">
           <input type="range" id="bl-v" min="0.1" max="0.8" step="0.05" value="0.4" aria-label="Swim speed metres per second">
-          <span class="ov-val"><span id="bl-vNum">0.40</span></span>
+          <span class="ov-val"><span id="bl-vNum">0.40</span> <span class="u-speed">m/s</span></span>
         </div>
       </div>
 
@@ -619,7 +625,7 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       <div class="results">
         <div class="readout">
           <div class="rlabel">Baseline (B)</div>
-          <div class="rval"><span id="bl-outB">—</span><span class="runit">m</span></div>
+          <div class="rval"><span id="bl-outB">—</span><span class="runit u-len">m</span></div>
           <div class="rnote">distance between shutter clicks</div>
         </div>
         <div class="readout key">
@@ -659,16 +665,16 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       <div class="field">
         <div class="label"><span class="name">Orbit radius (r)</span><span class="hint">camera → target centre</span></div>
         <div class="in-row">
-          <input class="num" id="ob-r" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Orbit radius in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+          <input class="num" id="ob-r" type="number" inputmode="decimal" min="0" step="0.1" value="2" aria-label="Orbit radius">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
       </div>
 
       <div class="field">
         <div class="label"><span class="name">Baseline (B)</span><span class="hint">from the Baseline tool</span></div>
         <div class="in-row">
-          <input class="num" id="ob-B" type="number" inputmode="decimal" min="0" step="0.01" value="0.24" aria-label="Baseline in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">metres</label></div>
+          <input class="num" id="ob-B" type="number" inputmode="decimal" min="0" step="0.01" value="0.24" aria-label="Baseline">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
         <button class="chip" id="ob-pullB" type="button" style="margin-top:10px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -741,7 +747,7 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
         <div class="label"><span class="name">Surface GPS accuracy</span><span class="hint">consumer WAAS ≈ 3–5 m</span></div>
         <div class="slider-row">
           <input type="range" id="ac-gps" min="2" max="10" step="1" value="4" aria-label="GPS accuracy in metres">
-          <span class="ov-val">±<span id="ac-gpsNum">4</span> m</span>
+          <span class="ov-val">±<span id="ac-gpsNum">4</span> <span class="u-len">m</span></span>
         </div>
       </div>
 
@@ -762,16 +768,16 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
           <input type="radio" name="acScale" id="ac-sx" value="none"><label for="ac-sx">None<small>no scale</small></label>
         </div>
         <div id="ac-lenWrap" class="in-row" style="margin-top:10px">
-          <input class="num" id="ac-len" type="number" inputmode="decimal" min="0" step="0.01" value="1.50" aria-label="Scale reference length in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">m measured</label></div>
+          <input class="num" id="ac-len" type="number" inputmode="decimal" min="0" step="0.01" value="1.50" aria-label="Scale reference length">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span> measured</label></div>
         </div>
       </div>
 
       <div class="field">
         <div class="label"><span class="name">Checkpoint residual</span><span class="hint">independent test · blank if none</span></div>
         <div class="in-row">
-          <input class="num" id="ac-resid" type="number" inputmode="decimal" min="0" step="0.1" value="1.4" placeholder="—" aria-label="Checkpoint residual in metres">
-          <div class="seg tight"><label style="cursor:default;color:var(--ink)">m</label></div>
+          <input class="num" id="ac-resid" type="number" inputmode="decimal" min="0" step="0.1" value="1.4" placeholder="—" aria-label="Checkpoint residual">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)"><span class="u-len">m</span></label></div>
         </div>
       </div>
 
@@ -955,6 +961,53 @@ const D2R = Math.PI/180, R2D = 180/Math.PI;
 const fmt = (x,d=2) => (Math.round(x*10**d)/10**d).toLocaleString(undefined,{maximumFractionDigits:d});
 
 /* ===========================================================================
+   GLOBAL UNITS — one Metric/Imperial switch drives every tool. The geometry
+   is unit-agnostic (ratios), so the switch is a presentation layer: number
+   inputs convert on toggle; the speed & GPS sliders stay in SI (metres) and
+   only their readouts/derived values convert; time, angles, %, and frame
+   counts are unit-free. Default metric — matches the course and Deeper output.
+   =========================================================================== */
+const U = (() => {
+  const FT = 3.280839895;
+  const KEY = "rc.units";
+  let u = "metric";
+  try { const s = Store.get(KEY); if (s === "imperial" || s === "metric") u = s; } catch(_){}
+  const subs = [];
+  const isImp  = () => u === "imperial";
+  const len    = () => isImp() ? "ft" : "m";
+  const speed  = () => isImp() ? "ft/s" : "m/s";
+  const toSI   = (v) => isImp() ? v / FT : v;     // display value → metres
+  const fromSI = (m) => isImp() ? m * FT : m;     // metres → display value
+  function refreshLabels(){
+    document.querySelectorAll(".u-len").forEach(e => e.textContent = len());
+    document.querySelectorAll(".u-speed").forEach(e => e.textContent = speed());
+  }
+  function set(next){
+    if(next === u) return;
+    const toImp = next === "imperial";
+    u = next;
+    try { Store.set(KEY, u); } catch(_){}
+    subs.forEach(fn => { try { fn(toImp); } catch(_){} });
+    refreshLabels();
+  }
+  return {
+    FT, isImp, len, speed, toSI, fromSI, unit: () => u,
+    onChange(fn){ subs.push(fn); },
+    refreshLabels,
+    initUI(){
+      const r = document.querySelector('input[name=uUnit][value="'+u+'"]'); if(r) r.checked = true;
+      document.querySelectorAll('input[name=uUnit]').forEach(x => x.addEventListener("change", () => set(x.value)));
+      refreshLabels();
+    }
+  };
+})();
+// convert a length input's displayed value when the global switch flips
+function convLen(el, toImp){
+  const v = parseFloat(el.value); if(isNaN(v)) return;
+  el.value = toImp ? +(v * U.FT).toFixed(1) : +(v / U.FT).toFixed(2);
+}
+
+/* ===========================================================================
    TAB CONTROLLER — swaps panels, syncs URL hash, remembers last tab.
    =========================================================================== */
 const TABS = ["footprint","refraction","baseline","orbit","accuracy","info"];
@@ -979,11 +1032,10 @@ function svgAdd(parent, tag, attrs){ const el=document.createElementNS(NS,tag); 
    =========================================================================== */
 const Footprint = (() => {
   const FT_PER_M = 3.280839895;
-  const SKEY = "rc.footprint.v1";
+  const SKEY = "rc.footprint.v2";
   const depthEl=$("fp-depth"), customEl=$("fp-customAngle"), overlapEl=$("fp-overlap"), ovNum=$("fp-ovNum");
-  let lastUnit = "ft";
 
-  const unit  = () => document.querySelector('input[name=fpUnit]:checked').value;
+  const unit  = () => U.len();
   const beamCh= () => document.querySelector('input[name=fpBeam]:checked').value;
   const angle = () => beamCh()==="custom" ? parseFloat(customEl.value) : parseFloat(beamCh());
 
@@ -1052,23 +1104,19 @@ const Footprint = (() => {
     if(O>0) svgAdd(dimG,"text",{x:centers[0]+laneW/2,y:cy+3,"text-anchor":"middle",fill:"var(--coral-600)",class:"lbl-text"}).textContent=O+"% overlap";
   }
 
-  function persist(){ Store.set(SKEY, JSON.stringify({unit:unit(),beam:beamCh(),custom:customEl.value,overlap:overlapEl.value,depth:depthEl.value})); }
+  function persist(){ Store.set(SKEY, JSON.stringify({beam:beamCh(),custom:customEl.value,overlap:overlapEl.value,depth:depthEl.value})); }
   function restore(){
     let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return;
     if(s.depth) depthEl.value=s.depth; if(s.custom) customEl.value=s.custom; if(s.overlap) overlapEl.value=s.overlap;
-    const ub=$(s.unit==="m"?"fp-um":"fp-uft"); if(ub) ub.checked=true;
     const bmap={"7":"fp-bn","20":"fp-bm","47":"fp-bw","custom":"fp-bc"}; const bb=$(bmap[s.beam]||"fp-bn"); if(bb) bb.checked=true;
   }
-  function onUnit(){ const u=unit(), v=parseFloat(depthEl.value);
-    if(!isNaN(v)&&u!==lastUnit) depthEl.value = (u==="m") ? +(v/FT_PER_M).toFixed(2) : +(v*FT_PER_M).toFixed(1);
-    lastUnit=u; compute(); }
 
-  document.querySelectorAll('input[name=fpUnit]').forEach(r=>r.addEventListener("change",onUnit));
   document.querySelectorAll('input[name=fpBeam]').forEach(r=>r.addEventListener("change",compute));
   [depthEl,customEl,overlapEl].forEach(el=>el.addEventListener("input",compute));
-  $("fp-example").addEventListener("click",()=>{ $("fp-uft").checked=true; lastUnit="ft"; $("fp-bn").checked=true; depthEl.value=60; overlapEl.value=30; compute(); });
+  U.onChange((toImp)=>{ convLen(depthEl, toImp); compute(); });
+  $("fp-example").addEventListener("click",()=>{ $("fp-bn").checked=true; depthEl.value = U.isImp()?60:18; overlapEl.value=30; compute(); });
 
-  return { init(){ restore(); lastUnit=unit(); compute(); } };
+  return { init(){ restore(); compute(); } };
 })();
 
 /* ===========================================================================
@@ -1177,7 +1225,8 @@ const Refraction = (() => {
   document.querySelectorAll('input[name=rfPort]').forEach(r=>r.addEventListener("change",compute));
   document.querySelectorAll('input[name=rfWater]').forEach(r=>r.addEventListener("change",compute));
   [fovEl,distEl,nCustomEl].forEach(el=>el.addEventListener("input",compute));
-  $("rf-example").addEventListener("click",()=>{ $("rf-half").checked=true; $("rf-flat").checked=true; fovEl.value=45; distEl.value=2; compute(); });
+  U.onChange((toImp)=>{ convLen(distEl, toImp); compute(); });
+  $("rf-example").addEventListener("click",()=>{ $("rf-half").checked=true; $("rf-flat").checked=true; fovEl.value=45; distEl.value = U.isImp()?6.6:2; compute(); });
 
   return {
     init(){ restore(); compute(); },
@@ -1193,14 +1242,14 @@ const Baseline = (() => {
   const Wel=$("bl-W"), ovEl=$("bl-overlap"), vEl=$("bl-v");
   function compute(){
     const W=parseFloat(Wel.value), O=parseFloat(ovEl.value), v=parseFloat(vEl.value);
-    $("bl-ovNum").textContent=O; $("bl-vNum").textContent=fmt(v,2);
+    $("bl-ovNum").textContent=O; $("bl-vNum").textContent=fmt(U.fromSI(v),2);
     $("bl-refW").textContent = Store.get("rc.refraction.W") || "—";
     Wel.classList.toggle("bad", !(W>0)); vEl.classList.toggle("bad", !(v>0));
     if(!(W>0)||!(O>=0)||!(v>0)){
       $("bl-outB").textContent="—"; $("bl-outT").textContent="—"; $("bl-tNote").textContent="enter W and speed";
       draw(0.2,80); $("bl-warn").classList.remove("show"); persist(); return;
     }
-    const B=W*(1-O/100), t=B/v;
+    const B=W*(1-O/100), t=U.toSI(B)/v;   // B in display unit; speed slider in m/s; convert B→m so t is seconds
     $("bl-outB").textContent=fmt(B,2); $("bl-outT").textContent=fmt(t,2);
     // recommend a conservative whole/handy interval at or below t (more overlap, never less)
     let rec; if(t>=1) rec="set ~"+Math.floor(t)+" s (round down)"; else rec="set 1 shot/s — a safe margin";
@@ -1233,8 +1282,9 @@ const Baseline = (() => {
   function persist(){ Store.set(SKEY, JSON.stringify({W:Wel.value,O:ovEl.value,v:vEl.value})); Store.set("rc.baseline.B", $("bl-outB").textContent); }
   function restore(){ let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return; if(s.W) Wel.value=s.W; if(s.O) ovEl.value=s.O; if(s.v) vEl.value=s.v; }
   [Wel,ovEl,vEl].forEach(el=>el.addEventListener("input",compute));
+  U.onChange((toImp)=>{ convLen(Wel, toImp); compute(); });   // speed slider stays m/s; only W converts
   $("bl-pullW").addEventListener("click",()=>{ const w=Store.get("rc.refraction.W"); if(w&&w!=="—"){ Wel.value=w; compute(); } });
-  $("bl-example").addEventListener("click",()=>{ Wel.value=1.2; ovEl.value=80; vEl.value=0.4; compute(); });
+  $("bl-example").addEventListener("click",()=>{ Wel.value = U.isImp()?3.94:1.2; ovEl.value=80; vEl.value=0.4; compute(); });
   return { init(){ restore(); compute(); } };
 })();
 
@@ -1270,13 +1320,14 @@ const Orbit = (() => {
       svgAdd(g,"circle",{cx:x,cy:y,r:3.4,fill:"var(--teal-700)"});
     }
     $("ob-philbl").textContent="Δφ = "+$("ob-outPhi").textContent+"°";
-    $("ob-rlbl").textContent="r = "+fmt(parseFloat(rEl.value),1)+" m";
+    $("ob-rlbl").textContent="r = "+fmt(parseFloat(rEl.value),1)+" "+U.len();
   }
   function persist(){ Store.set(SKEY, JSON.stringify({r:rEl.value,B:BEl.value,m:mEl.value})); }
   function restore(){ let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return; if(s.r) rEl.value=s.r; if(s.B) BEl.value=s.B; if(s.m) mEl.value=s.m; }
   [rEl,BEl,mEl].forEach(el=>el.addEventListener("input",compute));
+  U.onChange((toImp)=>{ convLen(rEl, toImp); convLen(BEl, toImp); compute(); });
   $("ob-pullB").addEventListener("click",()=>{ const b=Store.get("rc.baseline.B"); if(b&&b!=="—"){ BEl.value=b; compute(); } });
-  $("ob-example").addEventListener("click",()=>{ rEl.value=2; BEl.value=0.24; mEl.value=10; compute(); });
+  $("ob-example").addEventListener("click",()=>{ rEl.value = U.isImp()?6.6:2; BEl.value = U.isImp()?0.79:0.24; mEl.value=10; compute(); });
   return { init(){ restore(); compute(); } };
 })();
 
@@ -1292,18 +1343,18 @@ const Accuracy = (() => {
   const scale = () => document.querySelector('input[name=acScale]:checked').value;
 
   function build(){
-    const gps=parseFloat(gpsEl.value), hi=gps+3;          // GPS + float-lag band
-    $("ac-gpsNum").textContent=gps;
+    const gps=parseFloat(gpsEl.value), hi=gps+3;          // slider in metres; +3 m float-lag band
+    $("ac-gpsNum").textContent=fmt(U.fromSI(gps),0);
     $("ac-lenWrap").style.display = (scale()==="none") ? "none" : "flex";
     const len=parseFloat(lenEl.value), resid=parseFloat(residEl.value), notes=notesEl.value.trim(), site=siteEl.value.trim();
 
     let scaleClause, scaleMiss=false;
-    if(scale()==="verified") scaleClause = `Absolute scale was fixed by a measured reference of ${isFinite(len)?fmt(len,2):"—"} m placed in frame and independently verified.`;
-    else if(scale()==="nominal") scaleClause = `A scale reference of nominal length ${isFinite(len)?fmt(len,2):"—"} m was used, but the length was not independently verified; the model's absolute size carries that uncertainty as a stated limitation.`;
+    if(scale()==="verified") scaleClause = `Absolute scale was fixed by a measured reference of ${isFinite(len)?fmt(len,2):"—"} ${U.len()} placed in frame and independently verified.`;
+    else if(scale()==="nominal") scaleClause = `A scale reference of nominal length ${isFinite(len)?fmt(len,2):"—"} ${U.len()} was used, but the length was not independently verified; the model's absolute size carries that uncertainty as a stated limitation.`;
     else { scaleClause = `No absolute scale reference was used: the model is correct in shape but its absolute size is unknown — a significant limitation.`; scaleMiss=true; }
 
     const checkClause = isFinite(resid)
-      ? `An independent checkpoint, not used in the fit, showed a residual of approximately ${fmt(resid,1)} m.`
+      ? `An independent checkpoint, not used in the fit, showed a residual of approximately ${fmt(resid,1)} ${U.len()}.`
       : `No independent checkpoint was held out, so registration accuracy is estimated rather than measured.`;
 
     const sitePrefix = site ? `${site}. ` : "";
@@ -1313,7 +1364,7 @@ const Accuracy = (() => {
       `${sitePrefix}This map combines a bathymetric DEM from acoustic survey (Deeper Smart Sonar Max, towed at the surface) with a photogrammetric product captured by underwater camera. `+
       `${checkClause} `+
       `<span class="${scaleMiss?'miss':''}">${scaleClause}</span> `+
-      `Absolute horizontal accuracy is estimated at ±${gps}–${hi} m, limited primarily by consumer GPS on the surface float and float lag during turns; positions are referenced to ${datum()}. `+
+      `Absolute horizontal accuracy is estimated at ±${fmt(U.fromSI(gps),0)}–${fmt(U.fromSI(hi),0)} ${U.len()}, limited primarily by consumer GPS on the surface float and float lag during turns; positions are referenced to ${datum()}. `+
       `Vertical bathymetric resolution is sub-metre; photogrammetric relative shape is sub-metre where the scale reference was visible.${notesClause} `+
       `This is a recreational and educational reef-documentation product — not survey-grade. It is suitable for diver orientation, site documentation, and change detection between surveys, and must not be used for navigation, legal boundary determination, salvage planning, or any safety-of-life application.`;
 
@@ -1332,6 +1383,7 @@ const Accuracy = (() => {
   }
   [siteEl,gpsEl,residEl,notesEl,lenEl].forEach(el=>el.addEventListener("input",build));
   document.querySelectorAll('input[name=acDatum],input[name=acScale]').forEach(r=>r.addEventListener("change",build));
+  U.onChange((toImp)=>{ convLen(lenEl, toImp); convLen(residEl, toImp); build(); });
   $("ac-copy").addEventListener("click", async () => {
     const txt=plain(); let ok=false;
     try{ await navigator.clipboard.writeText(txt); ok=true; }
@@ -1385,7 +1437,6 @@ const PlanSlate = (() => {
   const val = (id) => { const el=$(id); return el ? String(el.value).trim() : ""; };
   const has = (s) => s !== "" && s !== "—";
   const beam = () => { const r=document.querySelector('input[name=fpBeam]:checked'); if(!r) return ""; return r.value==="custom" ? (val("fp-customAngle")+"° (custom)") : (r.value+"°"); };
-  const fpUnit = () => { const r=document.querySelector('input[name=fpUnit]:checked'); return r?r.value:""; };
 
   // one row: label, value (+unit) if present, else a blank write-in line
   function row(k, v, u){
@@ -1408,7 +1459,8 @@ const PlanSlate = (() => {
     fill("ps-m-bt", di["iv-bt"]);
     const nb=$("ps-m-notes"); if(nb){ const n=(di["iv-notes"]||"").trim(); nb.textContent=n; nb.classList.toggle("filled", n!==""); }
 
-    const u = fpUnit();
+    const u = U.len(), spd = U.speed();
+    const speedDisp = (() => { const x=parseFloat(val("bl-v")); return isNaN(x) ? "" : fmt(U.fromSI(x),2); })();
     // 01 footprint
     $("ps-fp").innerHTML =
       row("Water depth (d)", val("fp-depth"), u) +
@@ -1420,22 +1472,22 @@ const PlanSlate = (() => {
     // 02 refraction
     $("ps-rf").innerHTML =
       row("Field of view (air)", val("rf-fov")? val("rf-fov")+"°" : "", "") +
-      row("Subject distance (L)", val("rf-dist"), "m") +
+      row("Subject distance (L)", val("rf-dist"), u) +
       row("FOV underwater", txt("rf-outFull")? txt("rf-outFull")+"°" : "", "") +
-      row("Frame width (W)", txt("rf-outWwater"), "m");
+      row("Frame width (W)", txt("rf-outWwater"), u);
 
     // 03 baseline
     $("ps-bl").innerHTML =
-      row("Frame width (W)", val("bl-W"), "m") +
+      row("Frame width (W)", val("bl-W"), u) +
       row("Overlap", val("bl-overlap")? val("bl-overlap")+"%" : "", "") +
-      row("Swim speed (v)", val("bl-v"), "m/s") +
-      row("Baseline (B)", txt("bl-outB"), "m") +
+      row("Swim speed (v)", speedDisp, spd) +
+      row("Baseline (B)", txt("bl-outB"), u) +
       row("Time between shots", txt("bl-outT"), "s");
 
     // 04 orbit
     $("ps-ob").innerHTML =
-      row("Orbit radius (r)", val("ob-r"), "m") +
-      row("Baseline (B)", val("ob-B"), "m") +
+      row("Orbit radius (r)", val("ob-r"), u) +
+      row("Baseline (B)", val("ob-B"), u) +
       row("Angular step (Δφ)", txt("ob-outPhi")? txt("ob-outPhi")+"°" : "", "") +
       row("Frames (N)", txt("ob-outN"), "");
 
@@ -1461,6 +1513,7 @@ Baseline.init();
 Orbit.init();
 Accuracy.init();
 DiveInfo.init();
+U.initUI();
 setTab(location.hash.slice(1) || Store.get("rc.tab") || "footprint", false);
 
 /* register the service worker for offline/PWA — guarded so it never errors */
