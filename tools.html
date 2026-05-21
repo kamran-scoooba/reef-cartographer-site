@@ -226,6 +226,60 @@ footer.site .ft-base{ display:flex; justify-content:space-between; gap:14px; fle
 footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
 
 @media (max-width:380px){ .beamgrid{ grid-template-columns:repeat(2,1fr); } .results{ grid-template-columns:1fr; } }
+
+/* ---- Print / Save-as-PDF button (screen) ---- */
+.planbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:14px 0 2px; }
+.planbtn{ display:inline-flex; align-items:center; gap:9px; background:var(--ink); color:var(--white); border:none; border-radius:99px; padding:11px 20px; font-family:var(--font-ui); font-size:.9rem; font-weight:600; cursor:pointer; transition:background .15s; }
+.planbtn:hover{ background:var(--teal-700); }
+.planbtn svg{ width:17px; height:17px; }
+.planhint{ font-size:.78rem; color:var(--ink-soft); max-width:46ch; }
+
+/* ---- Print slate: hidden on screen ---- */
+#plan-slate{ display:none; }
+
+/* ---- Print rules ---- */
+@media print{
+  /* hide the whole interactive app + chrome */
+  .site-nav, .verify, .planbar, .tabs, .panel, footer.site, header{ display:none !important; }
+  body, body.page{ background:#fff !important; }
+  /* show only the slate */
+  #plan-slate{ display:block !important; color:#111; font-family:var(--font-ui); font-size:10.5pt; line-height:1.4; padding:0; }
+  @page{ size:A4; margin:14mm; }
+
+  .ps-head{ border-bottom:2px solid #111; padding-bottom:8px; margin-bottom:12px; }
+  .ps-title{ font-family:var(--font-display); font-size:18pt; font-weight:600; }
+  .ps-sub{ font-size:9pt; color:#555; margin-top:2px; }
+
+  .ps-meta{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px 22px; margin-bottom:16px; }
+  .ps-f{ display:flex; align-items:flex-end; gap:6px; font-size:9pt; }
+  .ps-f span{ color:#555; white-space:nowrap; }
+  .ps-f i{ flex:1; border-bottom:1px dotted #999; height:13px; font-style:normal; font-weight:600; color:#111; text-align:left; padding-left:2px; }
+  .ps-f i.filled{ border-bottom:1px solid #555; }
+
+  .ps-notes{ margin-top:12px; font-size:9pt; }
+  .ps-notes-k{ color:#555; }
+  .ps-notes-box{ border:1px dotted #999; min-height:34px; margin-top:3px; padding:3px 5px; font-size:9pt; color:#111; white-space:pre-wrap; }
+  .ps-notes-box.filled{ border:1px solid #555; }
+
+  .ps-grid{ display:grid; grid-template-columns:1fr 1fr; gap:13px 22px; }
+  .ps-step{ break-inside:avoid; }
+  .ps-step.ps-wide{ grid-column:1 / -1; }
+  .ps-step h3{ font-family:var(--font-display); font-size:11.5pt; font-weight:600; border-bottom:1px solid #bbb; padding-bottom:3px; margin-bottom:6px; }
+  .ps-step h3 .n{ color:var(--coral-600); font-family:var(--font-mono); margin-right:4px; }
+  .ps-step h3 em{ font-style:normal; font-weight:400; font-size:8.5pt; color:#777; }
+  .ps-eq{ font-family:var(--font-mono); font-size:8pt; color:#666; margin-bottom:6px; }
+  .ps-row{ display:flex; align-items:flex-end; gap:7px; margin-bottom:5px; font-size:9.5pt; }
+  .ps-row .k{ color:#444; min-width:118px; }
+  .ps-row .v{ font-family:var(--font-mono); font-weight:600; }
+  .ps-row .blank{ flex:1; border-bottom:1px dotted #999; height:13px; min-width:60px; }
+  .ps-row .u{ color:#777; font-size:8.5pt; }
+  .ps-ac-line{ font-size:9pt; line-height:1.45; }
+  .ps-ac-blank{ border:1px dotted #999; min-height:46px; margin-top:4px; }
+
+  .ps-foot{ margin-top:16px; padding-top:8px; border-top:1px solid #bbb; font-size:8pt; color:#444; line-height:1.4; position:relative; }
+  .ps-foot b{ color:#111; }
+  .ps-foot .ps-url{ float:right; font-family:var(--font-mono); color:#777; }
+}
 </style>
 </head>
 
@@ -261,6 +315,14 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
     <p>These calculators are planning aids, not authorities. Every result depends on its inputs and assumptions — beam angle, refractive index, swim speed, rounding — and on field conditions that change. <b>Check each figure against your own equipment's specifications and the conditions on the day before you rely on it underwater.</b> The formula is shown beside every tool on purpose: understand the math and verify the result rather than trusting the number blindly. A recreational and educational aid — dive planning and safety remain your responsibility.</p>
   </div>
 
+  <div class="planbar">
+    <button class="planbtn" id="print-plan" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Print / Save as PDF
+    </button>
+    <span class="planhint">A one-page dive-plan slate — current values where filled, blank fields to complete by hand.</span>
+  </div>
+
   <!-- ===================== TAB BAR ===================== -->
   <nav class="tabs" role="tablist" aria-label="Survey tools">
     <button class="tab active" data-tab="footprint"  role="tab"><span class="tnum">01</span>Footprint</button>
@@ -268,6 +330,7 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
     <button class="tab"         data-tab="baseline"   role="tab"><span class="tnum">03</span>Baseline</button>
     <button class="tab"         data-tab="orbit"      role="tab"><span class="tnum">04</span>Orbit</button>
     <button class="tab"         data-tab="accuracy"   role="tab"><span class="tnum">05</span>Accuracy</button>
+    <button class="tab"         data-tab="info"       role="tab"><span class="tnum">06</span>Dive info</button>
   </nav>
 
   <!-- ============================================================ -->
@@ -406,6 +469,19 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
 
     <div class="card">
       <div class="field">
+        <div class="label"><span class="name">Water / medium</span><span class="hint">sets the refractive index n</span></div>
+        <div class="seg" role="radiogroup" aria-label="Water type">
+          <input type="radio" name="rfWater" id="rf-salt" value="salt" checked><label for="rf-salt">Salt<small>n 1.340</small></label>
+          <input type="radio" name="rfWater" id="rf-fresh" value="fresh"><label for="rf-fresh">Fresh<small>n 1.333</small></label>
+          <input type="radio" name="rfWater" id="rf-custom" value="custom"><label for="rf-custom">Custom<small>set n</small></label>
+        </div>
+        <div class="in-row" id="rf-customWrap" style="margin-top:10px;display:none">
+          <input class="num" id="rf-nCustom" type="number" inputmode="decimal" min="1.3" max="1.4" step="0.001" value="1.330" aria-label="Custom refractive index">
+          <div class="seg tight"><label style="cursor:default;color:var(--ink)">index n</label></div>
+        </div>
+      </div>
+
+      <div class="field">
         <div class="label"><span class="name">Port type</span><span class="hint">course assumes a flat port</span></div>
         <div class="seg" role="radiogroup" aria-label="Port type">
           <input type="radio" name="rfPort" id="rf-flat" value="flat" checked><label for="rf-flat">Flat port</label>
@@ -452,6 +528,7 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
       </div>
 
       <div style="margin-top:14px;display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-soft)">
+        <span>Index used: <b style="font-family:var(--font-mono);color:var(--ink)" id="rf-nShow">—</b></span>
         <span>FOV lost: <b style="color:var(--coral-600);font-family:var(--font-mono)" id="rf-outRed">—</b></span>
         <span>Flat-port ceiling: <b style="font-family:var(--font-mono)" id="rf-ceil">—</b></span>
       </div>
@@ -714,6 +791,131 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
     <p class="disclaimer">A good statement names the test, not the hope: it reports the measured checkpoint residual, names the dominant error sources, states what the map is good for, and explicitly disclaims what it is not. A missing or unverified scale reference is a stated limitation — never a silent gap.</p>
   </section>
 
+  <!-- ============================================================ -->
+  <!-- PANEL 06 · DIVE INFO (metadata for the printed slate)        -->
+  <!-- ============================================================ -->
+  <section class="panel" id="panel-info" role="tabpanel">
+    <div class="panel-head">
+      <h2>Dive <span class="em">info</span></h2>
+      <p>Optional details for your printed dive-plan slate. Anything you leave blank simply prints as a blank line to complete by hand. None of this changes the calculations above — it's record-keeping for the printout.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label"><span class="name">Dive site</span><span class="hint">name or location</span></div>
+        <div class="in-row"><input class="num" id="iv-site" type="text" value="" placeholder="e.g. Quarry A — NE quadrant" aria-label="Dive site" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Date</span></div>
+        <div class="in-row"><input class="num" id="iv-date" type="date" value="" aria-label="Dive date" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Diver</span></div>
+        <div class="in-row"><input class="num" id="iv-diver" type="text" value="" placeholder="your name" aria-label="Diver" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Buddy</span></div>
+        <div class="in-row"><input class="num" id="iv-buddy" type="text" value="" placeholder="buddy / team" aria-label="Buddy" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Surface temperature</span><span class="hint">include the unit</span></div>
+        <div class="in-row"><input class="num" id="iv-temp" type="text" value="" placeholder="e.g. 78 °F" aria-label="Surface temperature" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Visibility</span></div>
+        <div class="in-row"><input class="num" id="iv-vis" type="text" value="" placeholder="e.g. 30 ft" aria-label="Visibility" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Max depth</span></div>
+        <div class="in-row"><input class="num" id="iv-depth" type="text" value="" placeholder="e.g. 60 ft" aria-label="Max depth" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Planned bottom time</span></div>
+        <div class="in-row"><input class="num" id="iv-bt" type="text" value="" placeholder="e.g. 35 min" aria-label="Planned bottom time" style="font-family:var(--font-ui);font-size:1rem"></div>
+      </div>
+
+      <div class="field">
+        <div class="label"><span class="name">Conditions &amp; notes</span><span class="hint">current, tide, weather, tasks</span></div>
+        <div class="in-row"><textarea id="iv-notes" rows="3" placeholder="Anything worth recording for the dive…" aria-label="Conditions and notes" style="width:100%;font-family:var(--font-ui);font-size:1rem;resize:vertical"></textarea></div>
+      </div>
+
+      <button class="chip" id="iv-clear" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Clear all fields
+      </button>
+    </div>
+
+    <p class="disclaimer">These details are stored only in this browser and printed onto your slate. They are never sent anywhere.</p>
+  </section>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PRINT SLATE — hidden on screen, rendered only for print/PDF  -->
+<!-- Populated by JS on beforeprint from the live tool outputs.   -->
+<!-- ============================================================ -->
+<div id="plan-slate" aria-hidden="true">
+  <div class="ps-head">
+    <div class="ps-title">Reef Cartographer — Dive Plan</div>
+    <div class="ps-sub">Acoustic &amp; optical reef mapping · planning slate</div>
+  </div>
+
+  <div class="ps-meta">
+    <div class="ps-f"><span>Site</span><i id="ps-m-site"></i></div>
+    <div class="ps-f"><span>Date</span><i id="ps-m-date"></i></div>
+    <div class="ps-f"><span>Diver</span><i id="ps-m-diver"></i></div>
+    <div class="ps-f"><span>Buddy</span><i id="ps-m-buddy"></i></div>
+    <div class="ps-f"><span>Water type</span><i id="ps-m-water"></i></div>
+    <div class="ps-f"><span>Surface temp</span><i id="ps-m-temp"></i></div>
+    <div class="ps-f"><span>Visibility</span><i id="ps-m-vis"></i></div>
+    <div class="ps-f"><span>Max depth</span><i id="ps-m-depth"></i></div>
+    <div class="ps-f"><span>Bottom time</span><i id="ps-m-bt"></i></div>
+  </div>
+
+  <div class="ps-grid">
+    <section class="ps-step">
+      <h3><span class="n">01</span> Footprint <em>sonar coverage</em></h3>
+      <div class="ps-eq">D = 2·d·tan(θ/2) · s = D(1−O)</div>
+      <div class="ps-rows" id="ps-fp"></div>
+    </section>
+
+    <section class="ps-step">
+      <h3><span class="n">02</span> Refraction &amp; FOV <em>camera underwater</em></h3>
+      <div class="ps-eq">α_water = arcsin(sin α_air / 1.33) · W = 2·L·tan(α)</div>
+      <div class="ps-rows" id="ps-rf"></div>
+    </section>
+
+    <section class="ps-step">
+      <h3><span class="n">03</span> Baseline <em>photo spacing</em></h3>
+      <div class="ps-eq">B = W(1−O) · t = B / v</div>
+      <div class="ps-rows" id="ps-bl"></div>
+    </section>
+
+    <section class="ps-step">
+      <h3><span class="n">04</span> Orbit <em>convergent framing</em></h3>
+      <div class="ps-eq">Δφ = B / r · N ≈ 2πr / B + closure</div>
+      <div class="ps-rows" id="ps-ob"></div>
+    </section>
+
+    <section class="ps-step ps-wide">
+      <h3><span class="n">05</span> Accuracy &amp; limitations <em>attach to the map</em></h3>
+      <div class="ps-rows" id="ps-ac"></div>
+    </section>
+  </div>
+
+  <div class="ps-notes"><span class="ps-notes-k">Conditions &amp; notes</span><div class="ps-notes-box" id="ps-m-notes"></div></div>
+
+  <div class="ps-foot">
+    <b>Trust, but verify.</b> These are planning figures from stated formulas and the values entered — not measured field data. Check every number against your own equipment and the conditions on the day. Recreational and educational use only; not survey-grade or navigation-grade. Dive planning and safety remain your responsibility.
+    <span class="ps-url">reefcartographer.com</span>
+  </div>
 </div>
 
 <footer class="site">
@@ -755,8 +957,8 @@ const fmt = (x,d=2) => (Math.round(x*10**d)/10**d).toLocaleString(undefined,{max
 /* ===========================================================================
    TAB CONTROLLER — swaps panels, syncs URL hash, remembers last tab.
    =========================================================================== */
-const TABS = ["footprint","refraction","baseline","orbit","accuracy"];
-const TABNUM = { footprint:"01", refraction:"02", baseline:"03", orbit:"04", accuracy:"05" };
+const TABS = ["footprint","refraction","baseline","orbit","accuracy","info"];
+const TABNUM = { footprint:"01", refraction:"02", baseline:"03", orbit:"04", accuracy:"05", info:"06" };
 function setTab(name, push){
   if(!TABS.includes(name)) name = "footprint";
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab===name));
@@ -872,26 +1074,39 @@ const Footprint = (() => {
 /* ===========================================================================
    TOOL 02 · REFRACTION
    ---------------------------------------------------------------------------
-   N_WATER is the single refractive-index constant. The course's FOV table is
-   computed with 1.33; its stated 48.6° critical angle implies 1.333. Pick one
-   here and the whole tool stays self-consistent.
+   The refractive index is now medium-driven: Salt 1.340 (default, reef
+   environment), Fresh 1.333, or a range-clamped Custom value. The active n
+   is displayed and drives Snell's law throughout. The Course Guide's worked
+   example uses 1.33 — reachable via Custom — so set Custom n=1.33 to reconcile.
    =========================================================================== */
 const Refraction = (() => {
-  const N_WATER = 1.33;
+  const N_SALT = 1.340, N_FRESH = 1.333;   // seawater ~35 PSU vs fresh, ~20°C, sodium-D
   const SKEY = "rc.refraction.v1";
-  const fovEl=$("rf-fov"), distEl=$("rf-dist");
+  const fovEl=$("rf-fov"), distEl=$("rf-dist"), nCustomEl=$("rf-nCustom");
   const mode = () => document.querySelector('input[name=rfMode]:checked').value; // full | half
   const port = () => document.querySelector('input[name=rfPort]:checked').value; // flat | dome
+  const medium = () => document.querySelector('input[name=rfWater]:checked').value; // salt | fresh | custom
+  // active refractive index from the chosen medium (custom is range-clamped)
+  const nWater = () => {
+    const m = medium();
+    if(m==="fresh") return N_FRESH;
+    if(m==="custom"){ const v=parseFloat(nCustomEl.value); return (v>=1.3 && v<=1.4) ? v : 1.33; }
+    return N_SALT;
+  };
 
   // underwater half-FOV from air half-FOV (Snell at a flat port)
-  const waterHalf = (airHalfDeg) => R2D*Math.asin(Math.min(1, Math.sin(airHalfDeg*D2R)/N_WATER));
+  const waterHalf = (airHalfDeg) => R2D*Math.asin(Math.min(1, Math.sin(airHalfDeg*D2R)/nWater()));
   // frame width on subject at distance L: exact geometry, W = 2 L tan(halfFOV)
   const frameW = (halfDeg, L) => 2*L*Math.tan(halfDeg*D2R);
 
   function compute(){
+    const n = nWater();
+    $("rf-customWrap").style.display = medium()==="custom" ? "flex" : "none";
+    nCustomEl.classList.toggle("bad", medium()==="custom" && !(parseFloat(nCustomEl.value)>=1.3 && parseFloat(nCustomEl.value)<=1.4));
+    $("rf-nShow").textContent = "n = "+fmt(n,3);
     const raw=parseFloat(fovEl.value), L=parseFloat(distEl.value), isDome=port()==="dome";
     const airHalf = mode()==="full" ? raw/2 : raw;
-    const ceilHalf = R2D*Math.asin(1/N_WATER);
+    const ceilHalf = R2D*Math.asin(1/n);
     $("rf-ceil").textContent = isDome ? "n/a (dome)" : fmt(ceilHalf,1)+"° half · "+fmt(2*ceilHalf,0)+"° full";
     $("rf-domeArc").style.display = isDome ? "block" : "none";
     $("rf-port").style.display     = isDome ? "none"  : "block";
@@ -931,7 +1146,7 @@ const Refraction = (() => {
   function draw(airHalfReal, isDome){
     const lensX=270, portX=150, axis=120;
     const drawnAir = Math.min(airHalfReal, 42);
-    const drawnWat = isDome ? drawnAir : R2D*Math.asin(Math.min(1,Math.sin(drawnAir*D2R)/N_WATER));
+    const drawnWat = isDome ? drawnAir : R2D*Math.asin(Math.min(1,Math.sin(drawnAir*D2R)/nWater()));
     const dyPort = (lensX-portX)*Math.tan(drawnAir*D2R);          // half-height at port
     const topP=axis-dyPort, botP=axis+dyPort;
     const leftX=10, run=portX-leftX;
@@ -949,19 +1164,25 @@ const Refraction = (() => {
     $("rf-watLbl").textContent = isDome ? "= θa" : "θw "+fmt(isDome?airHalfReal:waterHalf(airHalfReal),1)+"°";
   }
 
-  function persist(){ Store.set(SKEY, JSON.stringify({mode:mode(),port:port(),fov:fovEl.value,dist:distEl.value})); }
+  function persist(){ Store.set(SKEY, JSON.stringify({mode:mode(),port:port(),fov:fovEl.value,dist:distEl.value,water:medium(),nc:nCustomEl.value})); }
   function restore(){
     let s; try{ s=JSON.parse(Store.get(SKEY)); }catch(_){ s=null; } if(!s) return;
     if(s.fov) fovEl.value=s.fov; if(s.dist) distEl.value=s.dist;
     const mm=$(s.mode==="half"?"rf-half":"rf-full"); if(mm) mm.checked=true;
     const pp=$(s.port==="dome"?"rf-dome":"rf-flat"); if(pp) pp.checked=true;
+    if(s.nc) nCustomEl.value=s.nc;
+    const wm=$(s.water==="fresh"?"rf-fresh":s.water==="custom"?"rf-custom":"rf-salt"); if(wm) wm.checked=true;
   }
   document.querySelectorAll('input[name=rfMode]').forEach(r=>r.addEventListener("change",compute));
   document.querySelectorAll('input[name=rfPort]').forEach(r=>r.addEventListener("change",compute));
-  [fovEl,distEl].forEach(el=>el.addEventListener("input",compute));
+  document.querySelectorAll('input[name=rfWater]').forEach(r=>r.addEventListener("change",compute));
+  [fovEl,distEl,nCustomEl].forEach(el=>el.addEventListener("input",compute));
   $("rf-example").addEventListener("click",()=>{ $("rf-half").checked=true; $("rf-flat").checked=true; fovEl.value=45; distEl.value=2; compute(); });
 
-  return { init(){ restore(); compute(); } };
+  return {
+    init(){ restore(); compute(); },
+    waterLabel(){ const m=medium(); const n=nWater(); const name = m==="fresh"?"Fresh":m==="custom"?"Custom":"Salt"; return name+" · n = "+fmt(n,3); }
+  };
 })();
 
 /* ===========================================================================
@@ -1123,6 +1344,115 @@ const Accuracy = (() => {
 })();
 
 /* ===========================================================================
+   TOOL 06 · DIVE INFO — metadata for the printed slate. Persists to storage,
+   feeds the slate header. Never affects any calculation.
+   =========================================================================== */
+const DiveInfo = (() => {
+  const SKEY = "rc.diveinfo.v1";
+  const TEXT = ["iv-site","iv-date","iv-diver","iv-buddy","iv-temp","iv-vis","iv-depth","iv-bt","iv-notes"];
+
+  function read(){
+    const o = {};
+    TEXT.forEach(id => o[id] = ($(id) ? $(id).value : ""));
+    return o;
+  }
+  function persist(){ Store.set(SKEY, JSON.stringify(read())); }
+
+  function restore(){
+    let s; try { s = JSON.parse(Store.get(SKEY) || "{}"); } catch(_) { s = {}; }
+    TEXT.forEach(id => { if($(id) && s[id]!=null) $(id).value = s[id]; });
+  }
+
+  function init(){
+    restore();
+    TEXT.forEach(id => { const el=$(id); if(el) el.addEventListener("input", persist); });
+    $("iv-clear").addEventListener("click", () => {
+      TEXT.forEach(id => { if($(id)) $(id).value = ""; });
+      persist();
+    });
+  }
+  return { init, read };
+})();
+
+/* ===========================================================================
+   PRINT SLATE — collects current values from each tool and lays out a
+   one-page dive-plan slate. Any value not yet computed ("—") or any field
+   the diver hasn't set prints as a blank write-in line, so the sheet works
+   as a hand-completed slate too.
+   =========================================================================== */
+const PlanSlate = (() => {
+  const txt = (id) => { const el=$(id); return el ? el.textContent.trim() : ""; };
+  const val = (id) => { const el=$(id); return el ? String(el.value).trim() : ""; };
+  const has = (s) => s !== "" && s !== "—";
+  const beam = () => { const r=document.querySelector('input[name=fpBeam]:checked'); if(!r) return ""; return r.value==="custom" ? (val("fp-customAngle")+"° (custom)") : (r.value+"°"); };
+  const fpUnit = () => { const r=document.querySelector('input[name=fpUnit]:checked'); return r?r.value:""; };
+
+  // one row: label, value (+unit) if present, else a blank write-in line
+  function row(k, v, u){
+    if(has(v)) return `<div class="ps-row"><span class="k">${k}</span><span class="v">${v}</span>${u?`<span class="u">${u}</span>`:""}</div>`;
+    return `<div class="ps-row"><span class="k">${k}</span><span class="blank"></span>${u?`<span class="u">${u}</span>`:""}</div>`;
+  }
+
+  function build(){
+    // header metadata from the Dive info tab — fill value or leave a write-in line
+    const di = DiveInfo.read();
+    const fill = (id, v) => { const el=$(id); if(!el) return; if(v && String(v).trim()!==""){ el.textContent=String(v).trim(); el.classList.add("filled"); } else { el.textContent=""; el.classList.remove("filled"); } };
+    fill("ps-m-site", di["iv-site"]);
+    fill("ps-m-date", di["iv-date"]);
+    fill("ps-m-diver", di["iv-diver"]);
+    fill("ps-m-buddy", di["iv-buddy"]);
+    fill("ps-m-water", Refraction.waterLabel());
+    fill("ps-m-temp", di["iv-temp"]);
+    fill("ps-m-vis", di["iv-vis"]);
+    fill("ps-m-depth", di["iv-depth"]);
+    fill("ps-m-bt", di["iv-bt"]);
+    const nb=$("ps-m-notes"); if(nb){ const n=(di["iv-notes"]||"").trim(); nb.textContent=n; nb.classList.toggle("filled", n!==""); }
+
+    const u = fpUnit();
+    // 01 footprint
+    $("ps-fp").innerHTML =
+      row("Water depth (d)", val("fp-depth"), u) +
+      row("Beam angle (θ)", beam(), "") +
+      row("Lane overlap", val("fp-overlap")? val("fp-overlap")+"%" : "", "") +
+      row("Footprint (D)", txt("fp-outD"), u) +
+      row("Lane spacing (s)", txt("fp-outS"), u);
+
+    // 02 refraction
+    $("ps-rf").innerHTML =
+      row("Field of view (air)", val("rf-fov")? val("rf-fov")+"°" : "", "") +
+      row("Subject distance (L)", val("rf-dist"), "m") +
+      row("FOV underwater", txt("rf-outFull")? txt("rf-outFull")+"°" : "", "") +
+      row("Frame width (W)", txt("rf-outWwater"), "m");
+
+    // 03 baseline
+    $("ps-bl").innerHTML =
+      row("Frame width (W)", val("bl-W"), "m") +
+      row("Overlap", val("bl-overlap")? val("bl-overlap")+"%" : "", "") +
+      row("Swim speed (v)", val("bl-v"), "m/s") +
+      row("Baseline (B)", txt("bl-outB"), "m") +
+      row("Time between shots", txt("bl-outT"), "s");
+
+    // 04 orbit
+    $("ps-ob").innerHTML =
+      row("Orbit radius (r)", val("ob-r"), "m") +
+      row("Baseline (B)", val("ob-B"), "m") +
+      row("Angular step (Δφ)", txt("ob-outPhi")? txt("ob-outPhi")+"°" : "", "") +
+      row("Frames (N)", txt("ob-outN"), "");
+
+    // 05 accuracy — the generated statement if built, else a blank box to write one
+    const stmt = txt("ac-out");
+    $("ps-ac").innerHTML = has(stmt)
+      ? `<div class="ps-ac-line">${stmt.replace(/</g,"&lt;")}</div>`
+      : `<div class="ps-row"><span class="k">Limitations statement</span></div><div class="ps-ac-blank"></div>`;
+  }
+
+  // build right before the print dialog renders, and on button click
+  window.addEventListener("beforeprint", build);
+  $("print-plan").addEventListener("click", () => { build(); window.print(); });
+  return { build };
+})();
+
+/* ===========================================================================
    INIT
    =========================================================================== */
 Footprint.init();
@@ -1130,6 +1460,7 @@ Refraction.init();
 Baseline.init();
 Orbit.init();
 Accuracy.init();
+DiveInfo.init();
 setTab(location.hash.slice(1) || Store.get("rc.tab") || "footprint", false);
 
 /* register the service worker for offline/PWA — guarded so it never errors */
