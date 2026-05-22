@@ -222,20 +222,33 @@
       <div class="kit-item">
         <div class="kit-fig">
           <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-            <rect x="40" y="68" width="120" height="14" rx="3" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5"/>
-            <line x1="60" y1="68" x2="60" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
-            <line x1="80" y1="68" x2="80" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
-            <line x1="100" y1="68" x2="100" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
-            <line x1="120" y1="68" x2="120" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
-            <line x1="140" y1="68" x2="140" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
-            <path d="M40 94 h120" stroke="var(--coral)" stroke-width="1.2"/>
-            <path d="M40 91 v6 M160 91 v6" stroke="var(--coral)" stroke-width="1.2"/>
-            <text x="100" y="108" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--coral-600)">known length</text>
+            <!-- folding rule: partly-unfolded zigzag of segments -->
+            <g stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="round">
+              <!-- segment 1 (up-right) -->
+              <rect x="34" y="92" width="52" height="11" rx="2" fill="var(--white)" transform="rotate(-26 34 92)"/>
+              <!-- segment 2 (down-right) -->
+              <rect x="80" y="70" width="52" height="11" rx="2" fill="var(--paper-2)" transform="rotate(20 80 70)"/>
+              <!-- segment 3 (up-right) -->
+              <rect x="122" y="92" width="46" height="11" rx="2" fill="var(--white)" transform="rotate(-22 122 92)"/>
+            </g>
+            <!-- hinge rivets -->
+            <circle cx="80" cy="70" r="2.4" fill="var(--ink-faint)" stroke="var(--ink)" stroke-width="0.8"/>
+            <circle cx="121" cy="91" r="2.4" fill="var(--ink-faint)" stroke="var(--ink)" stroke-width="0.8"/>
+            <!-- a few graduation ticks on the first segment -->
+            <g stroke="var(--ink)" stroke-width="0.8">
+              <line x1="46" y1="86" x2="48" y2="82"/>
+              <line x1="55" y1="82" x2="57" y2="78"/>
+              <line x1="64" y1="78" x2="66" y2="74"/>
+            </g>
+            <!-- coral length bracket under it -->
+            <path d="M34 116 H150" stroke="var(--coral)" stroke-width="1.2"/>
+            <path d="M34 113 v6 M150 113 v6" stroke="var(--coral)" stroke-width="1.2"/>
+            <text x="92" y="130" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--coral-600)">known length</text>
           </svg>
         </div>
         <span class="kit-tag ex">Example</span>
         <h3>A scale reference</h3>
-        <p>A rigid bar or marked tape of <i>known, measured</i> length, laid in frame so the model can be scaled and checked. This is the physical object behind the Accuracy tool's scale-reference figure.</p>
+        <p>A rigid object of <i>known, measured</i> length, laid in frame so the model can be scaled and checked — the physical object behind the Accuracy tool's scale-reference figure. A composite folding rule such as the <a href="https://perfectmeasuringtape.com/shop/fr72-carpenters-folding-rule-6-5ft-2m/" target="_blank" rel="noopener noreferrer">Perfect Measuring Tape FR-72</a> (6.5 ft / 2 m) suits it well: fiberglass-reinforced, stainless springs, engraved markings, and rated for wet use — it folds compact and reads clearly in-frame.</p>
       </div>
 
       <!-- Reference line -->
