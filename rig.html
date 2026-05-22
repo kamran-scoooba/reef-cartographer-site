@@ -173,12 +173,27 @@
       <div class="kit-item">
         <div class="kit-fig">
           <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="75" r="34" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
-            <circle cx="100" cy="75" r="22" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.2"/>
-            <circle cx="100" cy="75" r="8" fill="var(--white)" stroke="var(--ink)" stroke-width="1.2"/>
-            <circle cx="100" cy="75" r="2.5" fill="var(--ink)"/>
-            <path d="M100 41 a34 34 0 0 1 30 18" stroke="var(--coral)" stroke-width="1.6" fill="none"/>
-            <path d="M130 59 q14 6 22 -2" stroke="var(--coral)" stroke-width="1.4" fill="none"/>
+            <!-- back flange (slightly offset, behind) -->
+            <ellipse cx="118" cy="75" rx="20" ry="42" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.4"/>
+            <!-- wound line: high-viz coil filling the hub between flanges -->
+            <rect x="70" y="42" width="48" height="66" fill="var(--coral)" stroke="none"/>
+            <path d="M70 49 h48 M70 56 h48 M70 63 h48 M70 70 h48 M70 77 h48 M70 84 h48 M70 91 h48 M70 98 h48 M70 105 h48" stroke="var(--coral-600)" stroke-width="0.8" opacity=".6"/>
+            <ellipse cx="118" cy="75" rx="13" ry="33" fill="var(--coral)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="118" cy="75" rx="13" ry="33" fill="none" stroke="var(--coral-600)" stroke-width="0.8"/>
+            <!-- front flange (facing us, with spoke cut-outs) -->
+            <ellipse cx="70" cy="75" rx="22" ry="44" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <!-- centre finger hole -->
+            <ellipse cx="70" cy="75" rx="7" ry="13" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.3"/>
+            <!-- spoke cut-outs around the flange -->
+            <ellipse cx="70" cy="46" rx="4" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="70" cy="104" rx="4" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="55" cy="60" rx="3.5" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="55" cy="90" rx="3.5" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="85" cy="60" rx="3.5" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <ellipse cx="85" cy="90" rx="3.5" ry="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/>
+            <!-- line tail + bolt snap leading off -->
+            <path d="M132 96 q22 6 34 -6" stroke="var(--coral)" stroke-width="1.6" fill="none"/>
+            <path d="M166 90 a4 4 0 1 0 0.1 0" fill="none" stroke="var(--ink)" stroke-width="1.3"/>
           </svg>
         </div>
         <span class="kit-tag ex">Example</span>
