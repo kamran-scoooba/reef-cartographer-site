@@ -137,3 +137,18 @@ footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
 
 @media (max-width:760px){ .grid.cols-3{ grid-template-columns:1fr; } .grid.cols-2{ grid-template-columns:1fr; } }
 @media (max-width:520px){ .site-nav nav a{ padding:7px 9px; font-size:.86rem; } }
+
+/* ---- The Rig: equipment grid + item cards ---- */
+.kit{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:8px; }
+.kit-item{ background:var(--white); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); padding:18px 18px 20px; display:flex; flex-direction:column; }
+.kit-fig{ background:var(--paper); border:1px solid var(--line); border-radius:var(--r-md); height:150px; display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+.kit-fig svg{ width:100%; height:100%; }
+.kit-tag{ display:inline-block; align-self:flex-start; font-family:var(--font-mono); font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; padding:3px 8px; border-radius:99px; margin-bottom:8px; }
+.kit-tag.req{ background:var(--coral-tint,#fce0d6); color:var(--coral-600); }
+.kit-tag.ex{ background:var(--paper-2); color:var(--ink-soft); }
+.kit-item h3{ font-family:var(--font-display); font-weight:500; font-size:1.12rem; line-height:1.15; margin:0 0 6px; }
+.kit-item p{ font-size:.9rem; color:var(--ink-soft); line-height:1.5; margin:0; }
+.rig-figure{ background:var(--white); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); padding:clamp(16px,3vw,26px); margin-top:10px; }
+.rig-figure svg{ width:100%; height:auto; display:block; }
+.rig-cap{ font-size:.82rem; color:var(--ink-soft); margin-top:12px; line-height:1.5; }
+@media (max-width:620px){ .kit{ grid-template-columns:1fr; } }

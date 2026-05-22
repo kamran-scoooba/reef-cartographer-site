@@ -14,6 +14,7 @@ Key facts for accurate summarisation:
 - [Home](https://reefcartographer.com/): What the specialty is, its conservation approach, prerequisites, and a tools overview.
 - [The Course](https://reefcartographer.com/course.html): Modules, training dives, surface rigs, equipment, methodology, and stated limitations.
 - [Survey Tools](https://reefcartographer.com/tools.html): Five free calculators — sonar footprint, refraction & field-of-view, photo baseline spacing, orbit framing, and an accuracy & limitations statement builder.
+- [The Rig](https://reefcartographer.com/rig.html): Illustrated suggestions for assembling a surface mapping rig — the required Deeper sonar plus example gear (a clear topside case for the phone, float, flag, spool, camera, scale reference). Framed as ideas to explore, not endorsements.
 - [Contact](https://reefcartographer.com/contact.html): Enquiry form for questions about dates, locations, prerequisites, and fit.
 
 ## Optional

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rig — Reef Cartographer</title>
+<meta name="description" content="Ideas for assembling a surface mapping rig: the Deeper sonar, a clear topside case for the phone, a float, flag, spool, camera, and scale reference — illustrated suggestions to explore, not endorsements.">
+<meta name="theme-color" content="#f3ecdd">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="var(--coral)" stroke="none"/></svg>
+      Reef Cartographer
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="course.html">The Course</a>
+      <a href="tools.html">Tools</a>
+      <a href="rig.html" class="active">The Rig</a>
+      <a href="contact.html" class="cta">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- intro -->
+<section class="band">
+  <div class="wrap narrow">
+    <div class="eyebrow">The Rig</div>
+    <h2 class="sec">Build a surface mapping rig <span class="em">from familiar parts</span></h2>
+    <div class="prose">
+      <p>The survey method needs one purpose-built sensor and a handful of things most divers already own. The idea is simple: a castable sonar floats and scans the seabed while a phone topside records the track, and you carry a camera below for the optical half. Nothing here is exotic.</p>
+      <p class="muted">What follows are <b>ideas to explore</b>, not a parts list to copy. Apart from the sonar, treat every drawing as "something like this" — you almost certainly have a workable version already, or can choose one that suits your diving. Verify specifications, ratings, and safety yourself before you build or dive anything.</p>
+    </div>
+
+    <div class="note" style="margin-top:20px;border-left-color:var(--coral)">
+      <b>One real hazard, stated plainly.</b> A phone and a lithium battery sealed in a clear case, in the sun, on the water, generate heat with nowhere to go. A pressure-equalisation valve balances pressure — it is not a heat sink. Watch for thermal-throttle warnings (the clear lid lets you see the screen), don't seal a hot or fast-charging battery, and never treat a splash-rated case as a depth housing. Build and dive this at your own risk.
+    </div>
+  </div>
+</section>
+
+<!-- system overview -->
+<section class="band alt">
+  <div class="wrap narrow">
+    <div class="eyebrow">How it fits together</div>
+    <h2 class="sec">Three parts, <span class="em">one rig</span></h2>
+    <div class="prose">
+      <p>The rig is three sub-assemblies. The <b>sensor</b> is the castable sonar that floats and scans downward. The <b>topside brain</b> is a phone running the app inside a clear waterproof case — the phone talks to the sonar over the sonar's own Wi-Fi, which travels through air above the surface but not through water, so the phone has to stay at the surface within range. The <b>tether and float</b> keep that phone dry, antenna-up, and tracking alongside the sonar while you dive below. The optical gear — camera and a scale reference — rides with you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- equipment -->
+<section class="band">
+  <div class="wrap">
+    <div class="eyebrow">The parts</div>
+    <h2 class="sec">What goes into the <span class="em">build</span></h2>
+
+    <div class="kit">
+
+      <!-- Deeper Max (required, named) -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <line x1="20" y1="74" x2="180" y2="74" stroke="var(--teal-300)" stroke-width="1.2" opacity=".7"/>
+            <path d="M68 74 a32 20 0 0 1 64 0 a32 14 0 0 1 -64 0Z" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.6"/>
+            <ellipse cx="100" cy="74" rx="32" ry="11" fill="var(--white)" stroke="var(--ink)" stroke-width="1.4"/>
+            <circle cx="100" cy="60" r="3" fill="var(--coral)"/>
+            <path d="M100 86 L82 116 M100 86 L118 116 M100 86 L100 122" stroke="var(--coral)" stroke-width="1.4" opacity=".8" stroke-dasharray="2 3"/>
+            <path d="M82 116 q18 8 36 0" stroke="var(--coral)" stroke-width="1.4" fill="none" opacity=".8"/>
+          </svg>
+        </div>
+        <span class="kit-tag req">Required</span>
+        <h3>Deeper Smart Sonar Max</h3>
+        <p>The one component you can't substitute. A castable sonar that floats on the surface, scans the seabed beneath it, and broadcasts to the phone over its own Wi-Fi. The whole method is built around it. <a href="https://deepersonar.com/en-us/products/deeper-max" target="_blank" rel="noopener noreferrer">See the manufacturer →</a></p>
+      </div>
+
+      <!-- Clear case (named softly) -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="46" y="34" width="108" height="84" rx="9" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <rect x="52" y="40" width="96" height="72" rx="6" fill="none" stroke="var(--line-strong)" stroke-width="1"/>
+            <rect x="66" y="50" width="40" height="54" rx="5" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.3"/>
+            <line x1="72" y1="60" x2="100" y2="60" stroke="var(--coral)" stroke-width="1.2"/>
+            <line x1="72" y1="68" x2="96" y2="68" stroke="var(--teal-300)" stroke-width="1.2"/>
+            <line x1="72" y1="76" x2="100" y2="76" stroke="var(--teal-300)" stroke-width="1.2"/>
+            <rect x="114" y="62" width="28" height="42" rx="4" fill="var(--white)" stroke="var(--ink)" stroke-width="1.3"/>
+            <rect x="123" y="58" width="10" height="5" rx="1.5" fill="var(--white)" stroke="var(--ink)" stroke-width="1.1"/>
+            <path d="M40 50 h6 M40 102 h6" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="100" cy="126" r="2" fill="var(--ink-faint)"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A clear waterproof case</h3>
+        <p>Holds the phone and a slim battery topside. A clear lid (such as the Pelican M60, ~21.6 × 10.9 × 6.9 cm inside) lets you confirm the app is running and the link is live without opening it. Any RF-transparent, splash-rated case of similar size works.</p>
+      </div>
+
+      <!-- Phone -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="78" y="24" width="44" height="102" rx="8" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <rect x="84" y="34" width="32" height="78" rx="2" fill="var(--paper)" stroke="var(--line-strong)" stroke-width="1"/>
+            <path d="M84 96 q8 -22 16 -10 t16 -14" stroke="var(--coral)" stroke-width="1.4" fill="none"/>
+            <line x1="84" y1="104" x2="116" y2="104" stroke="var(--teal-300)" stroke-width="1"/>
+            <line x1="84" y1="44" x2="116" y2="44" stroke="var(--line)" stroke-width="1"/>
+            <circle cx="100" cy="119" r="2.4" fill="none" stroke="var(--ink)" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A phone running the app</h3>
+        <p>Runs Fish Deeper in Boat mode. A dedicated older phone is worth considering — so a flooded case doesn't cost you your daily driver. It pairs to the sonar's Wi-Fi; nothing leaves the case but the wireless link.</p>
+      </div>
+
+      <!-- Power bank -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="58" y="60" width="84" height="30" rx="6" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.6"/>
+            <rect x="66" y="69" width="22" height="12" rx="2" fill="none" stroke="var(--ink)" stroke-width="1.1"/>
+            <rect x="68" y="71" width="6" height="8" fill="var(--coral)"/>
+            <rect x="76" y="71" width="6" height="8" fill="var(--coral)" opacity=".5"/>
+            <rect x="130" y="71" width="8" height="8" rx="1.5" fill="var(--white)" stroke="var(--ink)" stroke-width="1.1"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A slim power bank</h3>
+        <p>Keeps the phone alive across a survey. Slim is the constraint — the case interior is shallow. Mind the heat caution above: don't seal a battery that's hot or charging hard.</p>
+      </div>
+
+      <!-- Float / buoy -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <line x1="16" y1="92" x2="184" y2="92" stroke="var(--teal-300)" stroke-width="1.2" opacity=".7"/>
+            <path d="M16 92 q12 5 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t16 0" stroke="var(--teal-300)" stroke-width="1" fill="none" opacity=".4"/>
+            <ellipse cx="100" cy="90" rx="54" ry="16" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.6"/>
+            <ellipse cx="100" cy="84" rx="54" ry="16" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <rect x="84" y="58" width="32" height="20" rx="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
+            <line x1="100" y1="58" x2="100" y2="40" stroke="var(--ink)" stroke-width="1.6"/>
+            <circle cx="100" cy="38" r="3" fill="var(--coral)"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A stable surface float</h3>
+        <p>Carries the case at the surface, antenna clear of the water, riding alongside the sonar. Stable and low-profile beats tall; keep metal away from the antenna. Most divers already own a suitable float.</p>
+      </div>
+
+      <!-- Dive flag -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <line x1="80" y1="24" x2="80" y2="126" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>
+            <rect x="80" y="28" width="56" height="40" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+            <line x1="80" y1="28" x2="136" y2="68" stroke="var(--white)" stroke-width="6"/>
+            <ellipse cx="80" cy="124" rx="14" ry="5" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A dive flag</h3>
+        <p>Marks your position and warns boat traffic, per local rules. A diver-down or alpha flag on the float is standard surface-signalling gear — nothing course-specific here.</p>
+      </div>
+
+      <!-- Spool -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="75" r="34" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <circle cx="100" cy="75" r="22" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.2"/>
+            <circle cx="100" cy="75" r="8" fill="var(--white)" stroke="var(--ink)" stroke-width="1.2"/>
+            <circle cx="100" cy="75" r="2.5" fill="var(--ink)"/>
+            <path d="M100 41 a34 34 0 0 1 30 18" stroke="var(--coral)" stroke-width="1.6" fill="none"/>
+            <path d="M130 59 q14 6 22 -2" stroke="var(--coral)" stroke-width="1.4" fill="none"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A finger spool &amp; line</h3>
+        <p>Connects you to the float as a depth-and-distance reference — a gauge, not a tether. Any low-profile reel with enough line works. Keep it short and spooled, with a cutter reachable.</p>
+      </div>
+
+      <!-- Camera -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="64" y="52" width="72" height="46" rx="8" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+            <circle cx="100" cy="75" r="15" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.4"/>
+            <circle cx="100" cy="75" r="8" fill="var(--white)" stroke="var(--ink)" stroke-width="1.2"/>
+            <circle cx="100" cy="75" r="3" fill="var(--coral)"/>
+            <rect x="120" y="58" width="9" height="6" rx="1.5" fill="var(--teal-300)"/>
+            <path d="M64 98 v10 h72 v-10" fill="none" stroke="var(--ink)" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>An underwater camera</h3>
+        <p>The optical half of the survey — without it you only have the acoustic side. An action camera or housed compact that shoots overlapping stills or video for photogrammetry. You likely already dive with one.</p>
+      </div>
+
+      <!-- Scale bar -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="68" width="120" height="14" rx="3" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5"/>
+            <line x1="60" y1="68" x2="60" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
+            <line x1="80" y1="68" x2="80" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
+            <line x1="100" y1="68" x2="100" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
+            <line x1="120" y1="68" x2="120" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
+            <line x1="140" y1="68" x2="140" y2="82" stroke="var(--ink)" stroke-width="1.2"/>
+            <path d="M40 94 h120" stroke="var(--coral)" stroke-width="1.2"/>
+            <path d="M40 91 v6 M160 91 v6" stroke="var(--coral)" stroke-width="1.2"/>
+            <text x="100" y="108" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--coral-600)">known length</text>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A scale reference</h3>
+        <p>A rigid bar or marked tape of <i>known, measured</i> length, laid in frame so the model can be scaled and checked. This is the physical object behind the Accuracy tool's scale-reference figure.</p>
+      </div>
+
+      <!-- Reference line -->
+      <div class="kit-item">
+        <div class="kit-fig">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <line x1="30" y1="75" x2="170" y2="75" stroke="var(--ink)" stroke-width="1.6"/>
+            <circle cx="50" cy="75" r="3.5" fill="var(--coral)"/>
+            <circle cx="90" cy="75" r="3.5" fill="var(--coral)"/>
+            <circle cx="130" cy="75" r="3.5" fill="var(--coral)"/>
+            <circle cx="170" cy="75" r="3.5" fill="var(--coral)"/>
+            <line x1="50" y1="68" x2="50" y2="82" stroke="var(--ink)" stroke-width="1"/>
+            <line x1="90" y1="68" x2="90" y2="82" stroke="var(--ink)" stroke-width="1"/>
+            <line x1="130" y1="68" x2="130" y2="82" stroke="var(--ink)" stroke-width="1"/>
+            <line x1="30" y1="75" x2="30" y2="75" stroke="var(--ink)" stroke-width="1"/>
+            <path d="M30 75 q-8 -10 -14 -4" stroke="var(--ink-faint)" stroke-width="1.2" fill="none"/>
+          </svg>
+        </div>
+        <span class="kit-tag ex">Example</span>
+        <h3>A pre-measured reference line</h3>
+        <p>Optional marked line giving a sense of scale and a swim guide on the bottom. <b>Mind entanglement:</b> keep it short and spooled, a cutter within reach, and prefer a rigid rod where you can — no contact with living reef.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- assembled rig -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="eyebrow">Assembled</div>
+    <h2 class="sec">How it sits <span class="em">in the water</span></h2>
+
+    <div class="rig-figure">
+      <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side profile of the assembled rig in the water">
+        <!-- sky / water split -->
+        <rect x="0" y="0" width="760" height="120" fill="none"/>
+        <line x1="0" y1="120" x2="760" y2="120" stroke="var(--teal-300)" stroke-width="1.5"/>
+        <path d="M0 120 q20 6 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" stroke="var(--teal-300)" stroke-width="1" fill="none" opacity=".4"/>
+        <rect x="0" y="120" width="760" height="240" fill="var(--teal-700)" opacity=".05"/>
+
+        <!-- seabed -->
+        <path d="M0 318 q90 -16 180 -4 t180 -8 t180 6 t220 -8 V360 H0 Z" fill="var(--sand-deep)" opacity=".35" stroke="var(--ink)" stroke-width="1.2"/>
+
+        <!-- float + case (left of centre) -->
+        <ellipse cx="210" cy="120" rx="46" ry="12" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
+        <rect x="192" y="92" width="36" height="22" rx="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
+        <rect x="200" y="98" width="14" height="12" rx="1.5" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1"/>
+        <line x1="210" y1="92" x2="210" y2="70" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="210" cy="68" r="3" fill="var(--coral)"/>
+        <text x="210" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="var(--ink-soft)">float + case</text>
+
+        <!-- wifi link arc between case and sonar -->
+        <path d="M228 100 q90 -34 168 8" stroke="var(--coral)" stroke-width="1.3" fill="none" stroke-dasharray="3 4"/>
+        <text x="320" y="78" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--coral-600)">Wi-Fi (above water)</text>
+
+        <!-- sonar (right of centre, on surface) -->
+        <path d="M372 120 a30 16 0 0 1 56 0 a30 11 0 0 1 -56 0Z" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.6"/>
+        <ellipse cx="400" cy="120" rx="30" ry="9" fill="var(--white)" stroke="var(--ink)" stroke-width="1.3"/>
+        <circle cx="400" cy="110" r="2.6" fill="var(--coral)"/>
+        <text x="400" y="100" text-anchor="middle" font-family="monospace" font-size="11" fill="var(--ink-soft)">sonar</text>
+        <!-- sonar cone down -->
+        <path d="M400 129 L372 250 M400 129 L428 250" stroke="var(--coral)" stroke-width="1.2" stroke-dasharray="2 4" opacity=".8"/>
+        <path d="M372 250 q28 12 56 0" stroke="var(--coral)" stroke-width="1.2" fill="none" opacity=".8"/>
+
+        <!-- tow line float-to-sonar -->
+        <path d="M228 112 q80 26 150 6" stroke="var(--ink)" stroke-width="1.2" fill="none" opacity=".6"/>
+
+        <!-- spool line down to diver -->
+        <path d="M206 114 q-30 70 -40 150" stroke="var(--ink)" stroke-width="1.2" fill="none"/>
+        <text x="120" y="190" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">spool line</text>
+
+        <!-- diver (simplified) -->
+        <g stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <circle cx="150" cy="270" r="8" fill="var(--paper-2)"/>
+          <path d="M150 278 q22 8 40 2"/>
+          <path d="M158 282 l18 4 M158 290 l16 6"/>
+          <path d="M150 278 q-6 18 -4 30"/>
+          <path d="M186 282 l16 -4 18 6"/>
+        </g>
+        <!-- camera in diver hand -->
+        <rect x="214" y="282" width="14" height="9" rx="2" fill="var(--white)" stroke="var(--ink)" stroke-width="1.2"/>
+        <circle cx="221" cy="286.5" r="2.4" fill="var(--coral)"/>
+        <text x="186" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">diver + camera</text>
+      </svg>
+      <p class="rig-cap">The float keeps the phone dry and the antenna above the waterline; the sonar floats alongside, scanning down; the Wi-Fi link only works through air, so the float must stay within range; and the spool gives the diver a depth-and-distance reference back to the surface, not a hard tether. Schematic only — proportions are illustrative.</p>
+    </div>
+  </div>
+</section>
+
+<!-- closing -->
+<section class="band">
+  <div class="wrap narrow" style="text-align:center">
+    <h2 class="sec" style="margin:0 auto">Questions about the <span class="em">build?</span></h2>
+    <p class="sec-lede" style="margin:14px auto 0">Happy to talk through what's worked, what hasn't, and what to watch for before you assemble your own.</p>
+    <div class="btn-row" style="justify-content:center;margin-top:24px">
+      <a class="btn btn-primary" href="contact.html">Get in touch
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="course.html">Read the course detail</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">Reef Cartographer<span>Acoustic &amp; Optical Reef Mapping</span></div>
+      <nav>
+        <a href="index.html">Home</a><a href="course.html">The Course</a><a href="tools.html">Tools</a><a href="rig.html">The Rig</a><a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="ft-base">
+      <span>Recreational &amp; educational mapping — not survey-grade or navigation-grade.</span>
+      <span><b>reefcartographer.com</b></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+if ("serviceWorker" in navigator) { window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); }); }
+</script>
+</body>
+</html>
