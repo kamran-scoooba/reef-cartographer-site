@@ -320,9 +320,11 @@
         <ellipse cx="400" cy="120" rx="30" ry="9" fill="var(--white)" stroke="var(--ink)" stroke-width="1.3"/>
         <circle cx="400" cy="110" r="2.6" fill="var(--coral)"/>
         <text x="400" y="100" text-anchor="middle" font-family="monospace" font-size="11" fill="var(--ink-soft)">sonar</text>
-        <!-- sonar cone down -->
-        <path d="M400 129 L372 250 M400 129 L428 250" stroke="var(--coral)" stroke-width="1.2" stroke-dasharray="2 4" opacity=".8"/>
-        <path d="M372 250 q28 12 56 0" stroke="var(--coral)" stroke-width="1.2" fill="none" opacity=".8"/>
+        <!-- sonar cone down to the seabed -->
+        <path d="M400 129 L368 312 M400 129 L432 312" stroke="var(--coral)" stroke-width="1.2" stroke-dasharray="2 4" opacity=".8"/>
+        <!-- coverage footprint on the seabed -->
+        <path d="M368 312 q32 11 64 0" stroke="var(--coral)" stroke-width="1.6" fill="none"/>
+        <text x="400" y="332" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--coral-600)">coverage on the bottom</text>
 
         <!-- tow line float-to-sonar -->
         <path d="M228 112 q80 26 150 6" stroke="var(--ink)" stroke-width="1.2" fill="none" opacity=".6"/>
