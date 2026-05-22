@@ -358,9 +358,9 @@
         <!-- tow line float-to-sonar -->
         <path d="M228 112 q80 26 150 6" stroke="var(--ink)" stroke-width="1.2" fill="none" opacity=".6"/>
 
-        <!-- spool line down to diver -->
-        <path d="M206 114 q-30 80 -45 158" stroke="var(--ink)" stroke-width="1.2" fill="none"/>
-        <text x="120" y="190" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">spool line</text>
+        <!-- spool line down to the diver's hand (held, not clipped to the back) -->
+        <path d="M206 114 q14 90 6 162 q-2 14 4 22" stroke="var(--ink)" stroke-width="1.2" fill="none"/>
+        <text x="250" y="240" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">spool line</text>
 
         <!-- diver — horizontal trim, mask + tank + fins, camera held forward -->
         <g stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
@@ -384,9 +384,12 @@
         <!-- camera held forward in the diver's hands -->
         <rect x="220" y="293" width="15" height="10" rx="2" fill="var(--white)" stroke="var(--ink)" stroke-width="1.3"/>
         <circle cx="227.5" cy="298" r="2.6" fill="var(--coral)"/>
-        <text x="170" y="324" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">diver + camera</text>
+        <!-- finger spool in the same hand: line terminates here, clearly held -->
+        <circle cx="216" cy="300" r="5" fill="var(--white)" stroke="var(--ink)" stroke-width="1.3"/>
+        <circle cx="216" cy="300" r="1.6" fill="var(--ink)"/>
+        <text x="170" y="326" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">diver · spool in hand · camera</text>
       </svg>
-      <p class="rig-cap">The float keeps the phone dry and the antenna above the waterline; the sonar floats alongside, scanning down; the Wi-Fi link only works through air, so the float must stay within range; and the spool gives the diver a depth-and-distance reference back to the surface, not a hard tether. Schematic only — proportions are illustrative.</p>
+      <p class="rig-cap">The float keeps the phone dry and the antenna above the waterline; the sonar floats alongside, scanning down; the Wi-Fi link only works through air, so the float must stay within range; and the spool is <b>held in the diver's hand</b> as a depth-and-distance reference — a gauge, not a hard tether clipped to the body. Schematic only — proportions are illustrative.</p>
     </div>
   </div>
 </section>
