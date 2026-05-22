@@ -265,13 +265,23 @@
         <!-- seabed -->
         <path d="M0 318 q90 -16 180 -4 t180 -8 t180 6 t220 -8 V360 H0 Z" fill="var(--sand-deep)" opacity=".35" stroke="var(--ink)" stroke-width="1.2"/>
 
-        <!-- float + case (left of centre) -->
-        <ellipse cx="210" cy="120" rx="46" ry="12" fill="var(--white)" stroke="var(--ink)" stroke-width="1.6"/>
-        <rect x="192" y="92" width="36" height="22" rx="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
-        <rect x="200" y="98" width="14" height="12" rx="1.5" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1"/>
-        <line x1="210" y1="92" x2="210" y2="70" stroke="var(--ink)" stroke-width="1.6"/>
-        <circle cx="210" cy="68" r="3" fill="var(--coral)"/>
-        <text x="210" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="var(--ink-soft)">float + case</text>
+        <!-- float + case: red ring dive-buoy (side profile at the surface) -->
+        <!-- ring tube: two lobes at the waterline with the case sitting in the centre -->
+        <ellipse cx="185" cy="120" rx="20" ry="13" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.6"/>
+        <ellipse cx="235" cy="120" rx="20" ry="13" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.6"/>
+        <!-- white dive-flag stripe across the near tube faces -->
+        <rect x="167" y="116" width="36" height="6" fill="var(--white)"/>
+        <rect x="217" y="116" width="36" height="6" fill="var(--white)"/>
+        <ellipse cx="185" cy="120" rx="20" ry="13" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+        <ellipse cx="235" cy="120" rx="20" ry="13" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+        <!-- case resting in the ring centre -->
+        <rect x="196" y="98" width="28" height="18" rx="3" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
+        <rect x="203" y="103" width="14" height="10" rx="1.5" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1"/>
+        <!-- flag on a short pole -->
+        <line x1="210" y1="98" x2="210" y2="70" stroke="var(--ink)" stroke-width="1.6"/>
+        <rect x="210" y="70" width="16" height="11" fill="var(--coral)" stroke="var(--ink)" stroke-width="1"/>
+        <line x1="210" y1="70" x2="226" y2="81" stroke="var(--white)" stroke-width="2.2"/>
+        <text x="210" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="var(--ink-soft)">dive buoy + case</text>
 
         <!-- wifi link arc between case and sonar -->
         <path d="M228 100 q90 -34 168 8" stroke="var(--coral)" stroke-width="1.3" fill="none" stroke-dasharray="3 4"/>
@@ -320,7 +330,7 @@
         <circle cx="216" cy="300" r="1.6" fill="var(--ink)"/>
         <text x="170" y="326" text-anchor="middle" font-family="monospace" font-size="10" fill="var(--ink-soft)">diver · spool in hand · camera</text>
       </svg>
-      <p class="rig-cap">The float keeps the phone dry and the antenna above the waterline; the sonar floats alongside, scanning down; the Wi-Fi link only works through air, so the float must stay within range; and the spool is <b>held in the diver's hand</b> as a depth-and-distance reference — a gauge, not a hard tether clipped to the body. Schematic only — proportions are illustrative.</p>
+      <p class="rig-cap">The float keeps the phone dry and the antenna above the waterline; the sonar floats alongside, scanning down; the Wi-Fi link only works through air, so the float must stay within range; and the spool is <b>held in the diver's hand</b> as a depth-and-distance reference — a gauge, not a hard tether clipped to the body. The buoy shown is a high-visibility freediving float such as the <a href="https://store.cressi.com/products/freediving-buoy" target="_blank" rel="noopener noreferrer">Cressi Freediving Buoy</a>. Schematic only — proportions are illustrative.</p>
     </div>
   </div>
 </section>
