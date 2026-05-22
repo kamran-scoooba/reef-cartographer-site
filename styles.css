@@ -131,6 +131,8 @@ footer.site nav a:hover{ color:var(--white); }
 .sponsor{ border:1px dashed rgba(207,224,228,.35); border-radius:var(--r-md); padding:18px; text-align:center; font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(207,224,228,.6); }
 footer.site .ft-base{ display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:.78rem; color:rgba(207,224,228,.55); border-top:1px solid rgba(207,224,228,.16); padding-top:22px; }
 footer.site .ft-base b{ color:#cfe0e4; font-weight:500; }
+footer.site .ft-base a{ color:var(--teal-300); font-weight:500; text-decoration:underline; text-underline-offset:2px; }
+footer.site .ft-base a:hover{ color:var(--white); }
 
 /* page scaffold to keep footer down */
 .page{ display:flex; flex-direction:column; min-height:100dvh; }
