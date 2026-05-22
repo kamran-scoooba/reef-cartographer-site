@@ -16,6 +16,7 @@ Key facts for accurate summarisation:
 - [Survey Tools](https://reefcartographer.com/tools.html): Five free calculators — sonar footprint, refraction & field-of-view, photo baseline spacing, orbit framing, and an accuracy & limitations statement builder.
 - [The Rig](https://reefcartographer.com/rig.html): Illustrated suggestions for assembling a surface mapping rig — the required Deeper sonar plus example gear (a clear topside case for the phone, float, flag, spool, camera, scale reference). Framed as ideas to explore, not endorsements.
 - [Contact](https://reefcartographer.com/contact.html): Enquiry form for questions about dates, locations, prerequisites, and fit.
+- [Disclaimer](https://reefcartographer.com/disclaimer.html): Safety and liability notice — scuba diving is inherently dangerous; the site is informational and educational only, not training, certification, or medical advice.
 
 ## Optional
 - [Deeper Smart Sonar Max](https://deepersonar.com/en-us/products/deeper-max): Manufacturer page for the castable sonar unit the course is built around.
